@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ElectraBénin – Calculateur de factures d'électricité</title>
+<meta name="description" content="Calculateur de factures SBEE fiable et indépendant. Calcul BT1, BT2, BT3, compteur partagé."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════
+     PAGE ACCUEIL
+══════════════════════════════════════════════════════════════ -->
+<div id="page-accueil">
+
+  <!-- Topbar -->
+  <nav class="topbar">
+    <div class="topbar-brand">
+      <div class="topbar-logo">EB</div>
+      <div>
+        <div class="topbar-name">ElectraBénin</div>
+        <div class="topbar-tagline">Calcul basé sur les tarifs officiels SBEE</div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-badge">⚡ Outil indépendant · Tarifs SBEE officiels 2023</div>
+      <h1>ElectraBénin<br/><span class="accent">Calculateur de factures</span></h1>
+      <p class="hero-sub">Calculez votre facture SBEE en quelques secondes. Fiable, précis, gratuit. Basé sur les barèmes officiels BT1 / BT2 / BT3.</p>
+    </div>
+    <div class="hero-band"></div>
+  </section>
+
+  <!-- Fonctionnalités -->
+  <section class="home-section">
+    <p class="section-label">Ce que vous pouvez faire</p>
+    <h2 class="section-title">Toutes les fonctionnalités<br/><span>dont vous avez besoin</span></h2>
+
+    <div class="features-grid">
+      <div class="feat-card">
+        <div class="feat-icon-wrap">🧮</div>
+        <div class="feat-title">Calcul automatique de facture</div>
+        <div class="feat-desc">Obtenez le montant exact de votre facture mensuelle à partir de votre consommation en kWh. Chaque ligne est détaillée comme sur la facture papier.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon-wrap">🔍</div>
+        <div class="feat-title">Retrouver votre consommation</div>
+        <div class="feat-desc">Entrez le montant de votre facture SBEE et retrouvez automatiquement votre consommation estimée en kWh via recherche dichotomique.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon-wrap">🏠</div>
+        <div class="feat-title">Compteur partagé</div>
+        <div class="feat-desc">Répartition équitable entre colocataires : les frais fixes sont divisés également, le reste est calculé au prorata de vos kWh respectifs.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon-wrap">📊</div>
+        <div class="feat-title">Détail complet des calculs</div>
+        <div class="feat-desc">Visualisez chaque poste : consommation, prime fixe, TVA (18%), taxe communes et Fonds d'Électrification Rurale. Aucune ligne cachée.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bouton CTA -->
+  <div class="cta-section">
+    <button class="btn-start" onclick="startApp()">
+      Commencer maintenant
+      <span class="btn-start-arrow">→</span>
+    </button>
+    <p class="cta-note">Gratuit · Sans inscription · Données jamais transmises</p>
+  </div>
+
+  <!-- Info + Disclaimer -->
+  <section class="info-section">
+    <div class="info-box">
+      <div>
+        <p class="info-col-title">À propos d'ElectraBénin</p>
+        <ul class="info-list">
+          <li><span class="info-check">✓</span>Calculs basés sur les barèmes officiels publiés par la SBEE (BT1 / BT2 / BT3)</li>
+          <li><span class="info-check">✓</span>Tarifs mis à jour selon les documents officiels SBEE 2023</li>
+          <li><span class="info-check">✓</span>Idéal pour colocataires, propriétaires et gestionnaires d'immeubles</li>
+          <li><span class="info-check">✓</span>Gagnez du temps et évitez les erreurs de calcul manuel</li>
+          <li><span class="info-check">✓</span>Vérifiez votre facture avant ou après réception</li>
+        </ul>
+      </div>
+      <div>
+        <p class="info-col-title">Avertissement</p>
+        <div class="disclaimer">
+          <strong>⚠️ Important :</strong> ElectraBénin n'est pas affiliée à la SBEE (Société Béninoise d'Énergie Électrique). Cet outil est fourni à titre informatif uniquement. Les montants peuvent légèrement différer de votre facture réelle en raison des arrondis appliqués par la SBEE.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="home-footer">
+    ElectraBénin &copy; 2025 · Outil non officiel · Tarifs officiels SBEE Bénin · BT1 / BT2 / BT3
+  </footer>
+
+</div><!-- /page-accueil -->
+
+
+<!-- ══════════════════════════════════════════════════════════
+     PAGE CALCUL
+══════════════════════════════════════════════════════════════ -->
+<div id="page-calcul">
+
+  <!-- Topbar calcul -->
+  <nav class="topbar" style="justify-content:space-between;">
+    <button class="topbar-back" onclick="goBack()">← Accueil</button>
+    <div class="topbar-brand">
+      <div class="topbar-logo" style="width:34px;height:34px;font-size:.85rem;">EB</div>
+      <div>
+        <div class="topbar-name" style="font-size:.9rem;">ElectraBénin</div>
+        <div class="topbar-tagline">Tarifs officiels SBEE</div>
+      </div>
+    </div>
+    <div style="width:90px;"></div>
+  </nav>
+
+  <!-- En-tête page calcul -->
+  <div class="calc-header">
+    <div class="pill">Bénin · Basse Tension BT1 / BT2 / BT3</div>
+    <h1>Calculateur <em>Facture Électricité</em></h1>
+    <p class="sub">Calcul identique à la facture officielle SBEE · Tarifs BT1 / BT2 / BT3</p>
+  </div>
+
+  <!-- Légende tarifs -->
+  <div class="tarif-legend-wrap">
+    <div class="tarif-legend">
+      <div class="tarif-legend-title">Les 3 tarifs Basse Tension — choisissez le vôtre</div>
+      <div class="tl-grid">
+        <div class="tl-card bt1">
+          <div class="tl-name">Tarif BT 1 — Domestique</div>
+          <div class="tl-desc">Lumière & climatisation — particuliers résidentiels</div>
+          <div class="tl-price">86 / 125 / 148 FCFA/kWh</div>
+          <div class="tl-note">3 tranches selon la consommation mensuelle</div>
+        </div>
+        <div class="tl-card bt2">
+          <div class="tl-name">Tarif BT 2 — Professionnel</div>
+          <div class="tl-desc">Boutiques, salons, restaurants, hôtels, bureaux…</div>
+          <div class="tl-price">125 FCFA/kWh (tranche unique)</div>
+          <div class="tl-note">TVA 18% sur consommation + prime fixe</div>
+        </div>
+        <div class="tl-card bt3">
+          <div class="tl-name">Tarif BT 3 — Éclairage public</div>
+          <div class="tl-desc">Voirie, places publiques, éclairage collectif</div>
+          <div class="tl-price">133 FCFA/kWh (tranche unique)</div>
+          <div class="tl-note">TVA 18% sur consommation + prime fixe</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tab-bar-wrap">
+    <div class="tab-bar">
+      <button class="tab active" data-t="calc"    onclick="goTab('calc')"   >⚡ kWh → Facture</button>
+      <button class="tab"        data-t="reverse" onclick="goTab('reverse')">🔍 Facture → kWh</button>
+      <button class="tab"        data-t="split"   onclick="goTab('split')"  >⚖️ Compteur partagé</button>
+    </div>
+  </div>
+
+  <!-- ─── CARD PRINCIPALE (Mode 1 + 2) ─── -->
+  <div class="card-wrap">
+  <div class="card">
+
+    <!-- MODE 1 — kWh → Facture -->
+    <div id="p-calc" class="panel active">
+
+      <div class="tarif-selector">
+        <button class="ts-btn bt1 active" id="sel-calc-bt1" onclick="setTarif('calc','BT1')">
+          <span class="ts-label">BT 1</span>
+          <span class="ts-sub">Domestique</span>
+        </button>
+        <button class="ts-btn bt2" id="sel-calc-bt2" onclick="setTarif('calc','BT2')">
+          <span class="ts-label">BT 2</span>
+          <span class="ts-sub">Professionnel</span>
+        </button>
+        <button class="ts-btn bt3" id="sel-calc-bt3" onclick="setTarif('calc','BT3')">
+          <span class="ts-label">BT 3</span>
+          <span class="ts-sub">Éclairage public</span>
+        </button>
+      </div>
+
+      <div class="frow c2">
+        <div class="field">
+          <label for="c-kwh">Consommation du mois</label>
+          <div class="iw">
+            <input type="number" id="c-kwh" min="0" placeholder="ex : 15" oninput="liveTrancheCalc(this.value)"/>
+            <span class="utag">kWh</span>
+          </div>
+          <span class="hint">Relevé du compteur — détermine la tranche (BT1)</span>
+          <span class="errmsg" id="ec-kwh">Valeur ≥ 0 requise</span>
+        </div>
+        <div class="field">
+          <label for="c-kva">Puissance souscrite</label>
+          <div class="iw">
+            <input type="number" id="c-kva" min="1" step="1" placeholder="ex : 1"/>
+            <span class="utag">kVA</span>
+          </div>
+          <span class="hint">Prime fixe = 500 FCFA (valeur fixe SBEE)</span>
+          <span class="errmsg" id="ec-kva">Valeur ≥ 1 requise</span>
+        </div>
+      </div>
+
+      <div class="tranche-badge" id="tb">
+        <span class="tb-icon"></span>
+        <span class="tb-text">
+          <div class="tb-name"></div>
+          <div class="tb-formula"></div>
+        </span>
+      </div>
+
+      <button class="btn ba" onclick="doCalc()">Calculer la facture →</button>
+
+      <div id="r-calc" class="results">
+        <div class="divider"><span>Facture détaillée</span></div>
+        <div class="ftable">
+          <div class="fth">
+            <div>Rubrique</div><div>Qté</div><div>Prix Unit.</div><div>Montant</div>
+          </div>
+          <div id="ft-calc"></div>
+        </div>
+        <div class="netbox a">
+          <span class="nl">💰 NET À PAYER (TTC)</span>
+          <span class="nv" id="c-net"></span>
+        </div>
+      </div>
+
+    </div><!-- /p-calc -->
+
+    <!-- MODE 2 — Facture → kWh -->
+    <div id="p-reverse" class="panel">
+
+      <div class="tarif-selector">
+        <button class="ts-btn bt1 active" id="sel-rev-bt1" onclick="setTarif('rev','BT1')">
+          <span class="ts-label">BT 1</span><span class="ts-sub">Domestique</span>
+        </button>
+        <button class="ts-btn bt2" id="sel-rev-bt2" onclick="setTarif('rev','BT2')">
+          <span class="ts-label">BT 2</span><span class="ts-sub">Professionnel</span>
+        </button>
+        <button class="ts-btn bt3" id="sel-rev-bt3" onclick="setTarif('rev','BT3')">
+          <span class="ts-label">BT 3</span><span class="ts-sub">Éclairage public</span>
+        </button>
+      </div>
+
+      <div class="frow c2">
+        <div class="field">
+          <label for="r-net">Net à payer (sur votre facture)</label>
+          <div class="iw">
+            <input type="number" id="r-net" min="1" placeholder="ex : 2202" class="gf"/>
+            <span class="utag">FCFA</span>
+          </div>
+          <span class="hint">Montant TTC figurant sur la facture SBEE</span>
+          <span class="errmsg" id="er-net">Montant &gt; 0 requis</span>
+        </div>
+        <div class="field">
+          <label for="r-kva">Puissance souscrite</label>
+          <div class="iw">
+            <input type="number" id="r-kva" min="1" step="1" placeholder="ex : 1" class="gf"/>
+            <span class="utag">kVA</span>
+          </div>
+          <span class="hint">Indiqué sur votre contrat SBEE</span>
+          <span class="errmsg" id="er-kva">Valeur ≥ 1 requise</span>
+        </div>
+      </div>
+
+      <button class="btn bg" onclick="doReverse()">Estimer la consommation →</button>
+
+      <div id="r-rev" class="results">
+        <div class="divider"><span>Résultat</span></div>
+        <div class="kwhbox">
+          <span class="kl">⚡ Consommation estimée</span>
+          <span class="kv" id="rev-kwh"></span>
+        </div>
+        <div class="sec-t">Vérification — recalcul de la facture</div>
+        <div class="ftable">
+          <div class="fth">
+            <div>Rubrique</div><div>Qté</div><div>Prix Unit.</div><div>Montant</div>
+          </div>
+          <div id="ft-rev"></div>
+        </div>
+        <div class="netbox g">
+          <span class="nl">Net à payer recalculé</span>
+          <span class="nv" id="rev-net"></span>
+        </div>
+        <p style="font-size:.67rem;color:var(--text3);margin-top:8px;">* Arrondi à l'entier le plus proche.</p>
+      </div>
+
+    </div><!-- /p-reverse -->
+
+  </div><!-- /card -->
+  </div><!-- /card-wrap -->
+
+  <!-- ─── CARD MODE 3 — Compteur partagé ─── -->
+  <div class="card-wrap">
+  <div class="card" id="p-split" style="display:none;">
+
+    <p class="split-intro">
+      Vous partagez un compteur SBEE entre plusieurs personnes. Entrez le montant total
+      de la facture et la consommation de chaque utilisateur. Les frais fixes (prime + TVA)
+      sont divisés <strong>également</strong> entre tous ; le reste est réparti <strong>au prorata des kWh</strong>.
+    </p>
+
+    <div class="tarif-selector">
+      <button class="ts-btn bt1 active" id="sel-spl-bt1" onclick="setTarif('spl','BT1')">
+        <span class="ts-label">BT 1</span><span class="ts-sub">Domestique</span>
+      </button>
+      <button class="ts-btn bt2" id="sel-spl-bt2" onclick="setTarif('spl','BT2')">
+        <span class="ts-label">BT 2</span><span class="ts-sub">Professionnel</span>
+      </button>
+      <button class="ts-btn bt3" id="sel-spl-bt3" onclick="setTarif('spl','BT3')">
+        <span class="ts-label">BT 3</span><span class="ts-sub">Éclairage public</span>
+      </button>
+    </div>
+
+    <div class="frow c2">
+      <div class="field">
+        <label for="spl-total">Montant total de la facture SBEE</label>
+        <div class="iw">
+          <input type="number" id="spl-total" min="1" placeholder="ex : 18 500" class="bf"/>
+          <span class="utag">FCFA</span>
+        </div>
+        <span class="hint">Le NET À PAYER imprimé sur la facture</span>
+        <span class="errmsg" id="e-spltotal">Montant &gt; 0 requis</span>
+      </div>
+      <div class="field">
+        <label for="spl-nb">Nombre total d'utilisateurs</label>
+        <div class="iw">
+          <input type="number" id="spl-nb" min="2" max="7" step="1" placeholder="ex : 3"
+                 class="bf" oninput="splNbChange(this.value)"/>
+          <span class="utag">pers.</span>
+        </div>
+        <span class="hint">Tous ceux qui partagent ce compteur (2 à 7)</span>
+        <span class="errmsg" id="e-splnb">Minimum 2 requis</span>
+      </div>
+    </div>
+
+    <div id="spl-users-list"></div>
+
+    <button class="btn-add" id="spl-add-btn" onclick="splAddUser()">＋ Ajouter un utilisateur</button>
+
+    <button class="btn bb" onclick="doSplit()">Calculer les parts →</button>
+
+    <div id="r-split" class="results">
+      <div class="divider"><span>Répartition</span></div>
+
+      <div class="propbar-wrap">
+        <div class="propbar-labels" id="spl-bar-labels"></div>
+        <div class="propbar" id="spl-propbar"></div>
+      </div>
+
+      <div class="sec-t">Frais fixes partagés entre tous les utilisateurs</div>
+      <div class="sum-box" id="spl-sum-fixes"></div>
+
+      <div class="sec-t">Part de chaque utilisateur</div>
+      <div id="spl-res-cards"></div>
+
+      <div class="reste-box hidden" id="spl-reste-box">
+        <span>⚠️ Écart de calcul</span>
+        <span id="spl-reste-val" style="font-family:var(--mono);"></span>
+      </div>
+
+      <div class="netbox b">
+        <span class="nl">💰 Total facture SBEE</span>
+        <span class="nv" id="spl-total-check"></span>
+      </div>
+
+    </div><!-- /r-split -->
+
+  </div><!-- /p-split -->
+  </div><!-- /card-wrap -->
+
+  <footer>
+    ElectraBénin · Outil non officiel · Basé sur les tarifs officiels SBEE Bénin · BT1 / BT2 / BT3
+  </footer>
+
+</div><!-- /page-calcul -->
+
+<script src="app.js"></script>
+</body>
+</html>
