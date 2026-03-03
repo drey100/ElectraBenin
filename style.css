@@ -74,27 +74,12 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
   background-size:44px 44px;
 }
 .hero-content{position:relative;z-index:2;max-width:620px;margin:0 auto}
-.hero-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-
-  background: rgba(255, 255, 255, .12);
-  border: 1px solid rgba(255, 255, 255, .22);
-
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
-
-  border-radius: 50px;
-  padding: 5px 16px;
-
-  font-size: .65rem;
-  font-weight: 600;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-
-  color: rgba(255, 255, 255, .92);
-  margin-bottom: 22px;
+.hero-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);
+  backdrop-filter:blur(8px);border-radius:50px;padding:5px 16px;
+  font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(255,255,255,.92);margin-bottom:22px;
 }
 .hero h1{
   font-size:clamp(2rem,6vw,3.2rem);font-weight:800;color:#fff;
@@ -195,9 +180,11 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .disclaimer strong{color:var(--yellow2)}
 
 /* ══ HOME FOOTER ══ */
-.home-footer{
-  background:#1a1d23;color:rgba(255,255,255,.4);
-  text-align:center;padding:22px;font-size:.65rem;
+.home-footer,.calc-footer{
+  width:100%;background:var(--text);
+  padding:24px 20px;text-align:center;
+  font-size:.65rem;color:rgba(255,255,255,.4);
+  line-height:1.9;
 }
 
 /* ══ CALC HEADER ══ */
@@ -227,9 +214,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .tl-card.bt2{background:rgba(249,168,37,.06);border-color:var(--yellow)}
 .tl-card.bt3{background:rgba(59,89,152,.05);border-color:var(--blue)}
 .tl-name{font-size:.72rem;font-weight:700;margin-bottom:3px}
-.tl-card.bt1 .tl-name{color:var(--red)}
-.tl-card.bt2 .tl-name{color:var(--yellow2)}
-.tl-card.bt3 .tl-name{color:var(--blue)}
+.tl-card.bt1 .tl-name{color:var(--red)} .tl-card.bt2 .tl-name{color:var(--yellow2)} .tl-card.bt3 .tl-name{color:var(--blue)}
 .tl-desc{font-size:.68rem;color:var(--text2);margin-bottom:6px;line-height:1.4}
 .tl-price{font-family:var(--mono);font-size:.77rem;font-weight:600;color:var(--text)}
 .tl-note{font-size:.59rem;color:var(--text3);margin-top:3px}
@@ -265,9 +250,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .ts-btn.active.bt2{background:rgba(249,168,37,.08);border-color:rgba(249,168,37,.5)}
 .ts-btn.active.bt3{background:rgba(59,89,152,.07);border-color:rgba(59,89,152,.4)}
 .ts-label{font-size:.82rem;font-weight:700;display:block;margin-bottom:2px}
-.ts-btn.active.bt1 .ts-label{color:var(--red)}
-.ts-btn.active.bt2 .ts-label{color:var(--yellow2)}
-.ts-btn.active.bt3 .ts-label{color:var(--blue)}
+.ts-btn.active.bt1 .ts-label{color:var(--red)} .ts-btn.active.bt2 .ts-label{color:var(--yellow2)} .ts-btn.active.bt3 .ts-label{color:var(--blue)}
 .ts-sub{font-size:.65rem;color:var(--text3);display:block;line-height:1.3}
 
 /* ══ TRANCHE BADGE ══ */
@@ -291,7 +274,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 input[type=number],input[type=text]{
   width:100%;background:var(--bg);border:1.5px solid var(--border2);border-radius:var(--r);
   color:var(--text);font-family:var(--mono);font-size:.92rem;padding:11px 50px 11px 14px;
-  outline:none;transition:border-color .2s,box-shadow .2s,background .2s;appearance:textfield;
+  outline:none;transition:border-color .2s,box-shadow .2s,background .2s;-moz-appearance:textfield;
 }
 input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
 input[type=number]:focus,input[type=text]:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(237,31,36,.08);background:#fff}
@@ -373,14 +356,8 @@ input.err{border-color:var(--red)!important}
 .kwhbox .kl{font-size:.84rem;font-weight:600} .kwhbox .kv{font-family:var(--mono);font-size:1.35rem;font-weight:700;color:var(--yellow2)}
 
 /* ══ FOOTER ══ */
-footer {
-  width: 100%;
-  padding: 22px 20px;
-  font-size: .65rem;
-  color: var(--text3);
-  text-align: center;
-  line-height: 1.8;
-}
+/* footer géré par .home-footer/.calc-footer */
+
 /* ══ MODE 3 ══ */
 .split-intro{font-size:.79rem;color:var(--text2);line-height:1.7;margin-bottom:20px;padding:14px 18px;background:rgba(59,89,152,.04);border:1px solid rgba(59,89,152,.12);border-radius:var(--r);border-left:3px solid var(--blue)}
 .unum{width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;font-family:var(--mono)}
@@ -435,3 +412,46 @@ footer {
   .home-section,.cta-section,.info-section{padding-left:14px;padding-right:14px}
   .calc-header,.tarif-legend-wrap,.tab-bar-wrap,.card-wrap{padding-left:12px;padding-right:12px}
 }
+
+/* ══ BOUTON PRO CTA (version simple → pro) ══ */
+.btn-pro-cta{
+  flex:1;padding:13px 16px;border:none;border-radius:var(--r);
+  font-family:var(--font);font-size:.86rem;font-weight:700;
+  cursor:pointer;background:var(--blue);color:#fff;
+  box-shadow:0 4px 16px rgba(59,89,152,.3);
+  transition:transform .15s,box-shadow .15s;
+  display:flex;align-items:center;justify-content:center;gap:7px;
+}
+.btn-pro-cta:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(59,89,152,.4)}
+.btn-pro-cta:active{transform:translateY(0)}
+
+.btn-pro-banner{
+  width:100%;margin-top:14px;padding:13px 18px;border:none;border-radius:var(--r);
+  font-family:var(--font);font-size:.85rem;font-weight:700;cursor:pointer;
+  background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;
+  box-shadow:0 4px 16px rgba(59,89,152,.25);
+  transition:transform .15s,box-shadow .15s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn-pro-banner:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(59,89,152,.38)}
+
+/* ══ LIEN VERSION PRO (topbar) ══ */
+.topbar-pro-link{
+  background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);
+  color:#fff;padding:6px 16px;border-radius:50px;
+  font-family:var(--font);font-size:.75rem;font-weight:700;
+  cursor:pointer;transition:background .2s;white-space:nowrap;
+  text-decoration:none;display:flex;align-items:center;gap:5px;
+}
+.topbar-pro-link:hover{background:rgba(255,255,255,.28)}
+
+/* ══ PROMO BANNER VERSION PRO (page accueil) ══ */
+.pro-promo-banner{max-width:800px;margin:40px auto 0;padding:0 24px;width:100%}
+.pro-promo-inner{background:linear-gradient(135deg,rgba(59,89,152,.07),rgba(59,89,152,.02));border:1.5px solid rgba(59,89,152,.2);border-radius:var(--r2);padding:20px 22px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.pro-promo-icon{font-size:1.8rem;flex-shrink:0}
+.pro-promo-text{flex:1;min-width:180px}
+.pro-promo-title{font-size:.9rem;font-weight:700;color:var(--text);margin-bottom:4px}
+.pro-promo-sub{font-size:.72rem;color:var(--text3);line-height:1.5}
+.pro-promo-btn{background:var(--blue);color:#fff;border-radius:var(--r);padding:10px 20px;font-family:var(--font);font-size:.8rem;font-weight:700;text-decoration:none;white-space:nowrap;flex-shrink:0;box-shadow:0 3px 12px rgba(59,89,152,.28);transition:transform .15s,box-shadow .15s;display:inline-flex;align-items:center}
+.pro-promo-btn:hover{transform:translateY(-2px);box-shadow:0 5px 18px rgba(59,89,152,.4)}
+@media(max-width:540px){.pro-promo-inner{flex-direction:column;text-align:center}.pro-promo-btn{width:100%;justify-content:center}}
