@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>ElectraBénin — Dashboard Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+/* ══ ElectraBénin · Dashboard Admin · Charte SBEE ══ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --red:#ed1f24;--red2:#c8181d;--yellow:#f9a825;--green:#00cc66;--green2:#009944;
+  --blue:#3b5998;--blue2:#2d4475;
+  --bg:#0f1117;--bg2:#181b24;--bg3:#1e2230;--bg4:#252a3a;
+  --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.14);
+  --text:#e8eaf0;--text2:#9aa0b4;--text3:#5a6077;--text4:#3e445a;
+  --font:'Poppins',sans-serif;--mono:'Fira Code',monospace;
+  --r:10px;--r2:16px;
+  --shadow:0 2px 8px rgba(0,0,0,.3);--shadow2:0 8px 32px rgba(0,0,0,.5);
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+/* ── AUTH ── */
+#auth-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;background:radial-gradient(ellipse 900px 600px at 60% 40%,rgba(237,31,36,.06),transparent 70%)}
+.auth-box{background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:44px 38px;width:min(400px,100%);box-shadow:var(--shadow2)}
+.auth-logo{width:58px;height:58px;background:var(--red);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:900;color:#fff;margin:0 auto 20px;box-shadow:0 6px 20px rgba(237,31,36,.4)}
+.auth-title{text-align:center;font-size:1.25rem;font-weight:800;margin-bottom:5px}
+.auth-sub{text-align:center;font-size:.74rem;color:var(--text3);margin-bottom:28px}
+.auth-input{width:100%;padding:12px 16px;background:var(--bg3);border:1.5px solid var(--border2);border-radius:var(--r);color:var(--text);font-family:var(--font);font-size:.9rem;outline:none;margin-bottom:12px;transition:border-color .2s,box-shadow .2s}
+.auth-input:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(237,31,36,.12)}
+.auth-btn{width:100%;padding:13px;background:var(--red);border:none;border-radius:var(--r);font-family:var(--font);font-size:.9rem;font-weight:700;color:#fff;cursor:pointer;box-shadow:0 4px 16px rgba(237,31,36,.35);transition:transform .15s,box-shadow .15s}
+.auth-btn:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(237,31,36,.45)}
+.auth-error{font-size:.74rem;color:#ff6b6b;text-align:center;margin-top:8px;display:none}
+
+/* ── TOPBAR charte SBEE ── */
+#dashboard{display:none}
+.dash-topbar{width:100%;background:var(--red);padding:0 24px;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 16px rgba(237,31,36,.35)}
+.dash-topbar::after{content:'';position:absolute;bottom:-4px;left:0;right:0;height:4px;background:var(--yellow)}
+.dash-brand{display:flex;align-items:center;gap:12px}
+.dash-logo{width:38px;height:38px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.25);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:900;color:#fff;flex-shrink:0}
+.dash-title{font-size:.95rem;font-weight:800;color:#fff;line-height:1}
+.dash-sub{font-size:.58rem;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.07em;margin-top:2px}
+.dash-logout{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;padding:7px 16px;border-radius:50px;font-family:var(--font);font-size:.72rem;font-weight:600;cursor:pointer;transition:background .2s}
+.dash-logout:hover{background:rgba(255,255,255,.28)}
+.dash-body{max-width:1000px;margin:0 auto;padding:32px 20px}
+
+/* ── KPIs ── */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px}
+@media(max-width:700px){.kpi-grid{grid-template-columns:repeat(2,1fr)}}
+.kpi-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:20px 18px;position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s}
+.kpi-card:hover{transform:translateY(-3px);box-shadow:var(--shadow2)}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.kpi-card:nth-child(1)::before{background:var(--text3)}.kpi-card:nth-child(2)::before{background:var(--green)}
+.kpi-card:nth-child(3)::before{background:var(--yellow)}.kpi-card:nth-child(4)::before{background:var(--red)}
+.kpi-label{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:8px}
+.kpi-value{font-size:1.7rem;font-weight:800}
+.kpi-value.red{color:var(--red)}.kpi-value.green{color:var(--green)}.kpi-value.yellow{color:var(--yellow)}
+
+/* ── SECTION CARDS ── */
+.section-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:24px;margin-bottom:20px;box-shadow:var(--shadow)}
+.section-title{font-size:.9rem;font-weight:800;margin-bottom:18px;display:flex;align-items:center;gap:8px}
+
+/* ── FORM ── */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:600px){.form-grid{grid-template-columns:1fr}}
+.form-field{display:flex;flex-direction:column;gap:5px}
+.form-field label{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text3)}
+.form-field label .required{color:var(--red);margin-left:2px}
+.form-field label .hint-inline{font-weight:400;text-transform:none;letter-spacing:0;color:var(--text4);font-size:.6rem}
+.form-input,.form-select,.form-textarea{width:100%;padding:10px 14px;background:var(--bg3);border:1.5px solid var(--border2);border-radius:var(--r);color:var(--text);font-family:var(--font);font-size:.84rem;outline:none;transition:border-color .2s,box-shadow .2s}
+.form-textarea{resize:vertical;min-height:72px;line-height:1.5}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(237,31,36,.1)}
+.form-select option{background:var(--bg3)}
+.upload-zone{width:100%;min-height:90px;border:2px dashed var(--border2);border-radius:var(--r);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;background:var(--bg3);transition:border-color .2s,background .2s}
+.upload-zone:hover{border-color:var(--red);background:rgba(237,31,36,.04)}
+.upload-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.upload-zone-text{font-size:.76rem;color:var(--text3);pointer-events:none;text-align:center;padding:10px}
+.img-preview{width:100%;max-height:120px;object-fit:cover;border-radius:var(--r);display:none}
+.or-sep{display:flex;align-items:center;gap:8px;font-size:.62rem;color:var(--text3)}
+.or-sep::before,.or-sep::after{content:'';flex:1;height:1px;background:var(--border)}
+.btn-add-pub{width:100%;padding:13px;background:var(--red);border:none;border-radius:var(--r);font-family:var(--font);font-size:.88rem;font-weight:700;color:#fff;cursor:pointer;margin-top:14px;box-shadow:0 4px 16px rgba(237,31,36,.3);transition:transform .15s,box-shadow .15s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-add-pub:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(237,31,36,.4)}
+.btn-save{padding:10px 22px;background:var(--green2);border:none;border-radius:var(--r);font-family:var(--font);font-size:.82rem;font-weight:700;color:#fff;cursor:pointer;box-shadow:0 3px 12px rgba(0,153,68,.3);transition:transform .15s,box-shadow .15s;display:flex;align-items:center;gap:6px}
+.btn-save:hover{transform:translateY(-2px)}
+.config-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:14px}
+@media(max-width:600px){.config-grid{grid-template-columns:1fr}}
+
+/* ── SECTION CHAMPS (séparateur visuel) ── */
+.form-section-sep{grid-column:1/-1;border:none;border-top:1px solid var(--border);margin:6px 0}
+.form-section-label{grid-column:1/-1;font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);display:flex;align-items:center;gap:8px}
+.form-section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* ── LISTE PUBS ── */
+#pub-count-label{font-size:.72rem;color:var(--text3);font-weight:500}
+.pub-card{display:grid;grid-template-columns:140px 1fr auto;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);margin-bottom:12px;overflow:hidden;transition:border-color .2s,box-shadow .2s}
+.pub-card:hover{border-color:var(--border2);box-shadow:0 4px 20px rgba(0,0,0,.3)}
+.pub-card.inactive{opacity:.5}
+@media(max-width:600px){.pub-card{grid-template-columns:100px 1fr auto}}
+@media(max-width:440px){.pub-card{grid-template-columns:1fr auto}}
+.pub-thumb-col{position:relative;width:140px;min-height:120px;background:var(--bg4);overflow:hidden}
+@media(max-width:600px){.pub-thumb-col{width:100px}}
+@media(max-width:440px){.pub-thumb-col{display:none}}
+.pub-thumb{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s}
+.pub-card:hover .pub-thumb{transform:scale(1.04)}
+.pub-thumb-placeholder{width:100%;min-height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;color:var(--text4)}
+.pub-thumb-placeholder .ph-icon{font-size:1.5rem;opacity:.4}
+.pub-thumb-placeholder .ph-txt{font-size:.58rem;color:var(--text4);text-transform:uppercase;letter-spacing:.06em}
+.pub-status-dot{position:absolute;top:8px;left:8px;width:9px;height:9px;border-radius:50%;border:1.5px solid rgba(0,0,0,.35)}
+.pub-status-dot.active{background:var(--green);box-shadow:0 0 8px rgba(0,204,102,.6)}
+.pub-status-dot.inactive{background:var(--text3)}
+.pub-status-dot.expired{background:var(--red);box-shadow:0 0 8px rgba(237,31,36,.5)}
+.pub-info{padding:14px 16px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.pub-name{font-size:.9rem;font-weight:700;color:var(--text);line-height:1.3;word-break:break-word}
+.pub-contact{font-size:.72rem;color:#8fa8d8;display:flex;align-items:center;gap:5px;margin-top:1px}
+.pub-desc{font-size:.73rem;color:var(--text2);line-height:1.5;margin-top:2px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pub-meta{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px}
+.pub-badge{font-size:.58rem;font-weight:700;padding:3px 9px;border-radius:20px;background:var(--bg4);border:1px solid var(--border2);color:var(--text3);white-space:nowrap}
+.pub-badge.green{background:rgba(0,204,102,.1);border-color:rgba(0,204,102,.25);color:var(--green)}
+.pub-badge.red{background:rgba(237,31,36,.1);border-color:rgba(237,31,36,.25);color:var(--red)}
+.pub-badge.orange{background:rgba(249,168,37,.1);border-color:rgba(249,168,37,.25);color:var(--yellow)}
+.pub-badge.blue{background:rgba(59,89,152,.1);border-color:rgba(59,89,152,.25);color:#8fa8d8}
+.pub-info-footer{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:8px;border-top:1px solid var(--border)}
+.pub-stats{font-size:.67rem;color:var(--text3);display:flex;gap:10px;flex-wrap:wrap}
+.pub-stat strong{color:var(--text2);font-weight:600}
+.pub-expires{font-size:.63rem;color:var(--text3)}
+.pub-href{font-size:.63rem;color:#8fa8d8;text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:180px;display:block}
+.pub-href:hover{text-decoration:underline}
+.pub-actions{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:12px 14px;border-left:1px solid var(--border);background:rgba(0,0,0,.12)}
+.btn-icon{width:36px;height:36px;border:1px solid var(--border2);background:var(--bg4);border-radius:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.85rem;transition:all .2s;flex-shrink:0}
+.btn-icon:hover{background:var(--bg2)}
+.btn-icon.toggle-on{background:rgba(0,204,102,.12);border-color:rgba(0,204,102,.3)}
+.btn-icon.toggle-off{background:var(--bg4);border-color:var(--border);opacity:.55}
+.btn-icon.danger:hover{background:rgba(237,31,36,.15);border-color:rgba(237,31,36,.4)}
+.empty-state{text-align:center;padding:56px 20px}
+.empty-icon{font-size:3rem;margin-bottom:12px;opacity:.3}
+.empty-text{font-size:.8rem;color:var(--text3);line-height:1.7}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;right:24px;z-index:999;display:flex;align-items:center;gap:10px;padding:13px 18px;border-radius:var(--r2);font-size:.8rem;font-weight:600;max-width:320px;box-shadow:var(--shadow2);animation:toast-in .3s ease;pointer-events:none}
+@keyframes toast-in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.toast.success{background:#0d2b1a;border:1px solid rgba(0,204,102,.3);color:var(--green)}
+.toast.error{background:#2b0d0e;border:1px solid rgba(237,31,36,.35);color:#ff8a8d}
+.toast.info{background:var(--bg3);border:1px solid var(--border2);color:var(--text)}
+
+/* ── MODALS ── */
+.modal-overlay,.edit-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.modal-overlay{z-index:200}.edit-overlay{z-index:300}
+.modal-box{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:201;width:min(400px,92vw);background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:28px;box-shadow:0 24px 70px rgba(0,0,0,.7);display:none}
+.modal-title{font-size:.95rem;font-weight:800;margin-bottom:10px}
+.modal-msg{font-size:.78rem;color:var(--text2);line-height:1.6;margin-bottom:20px}
+.modal-actions{display:flex;gap:10px}
+.modal-btn{flex:1;padding:11px;border:none;border-radius:var(--r);font-family:var(--font);font-size:.82rem;font-weight:700;cursor:pointer;transition:transform .15s}
+.modal-btn.confirm{background:var(--red);color:#fff;box-shadow:0 4px 14px rgba(237,31,36,.3)}
+.modal-btn.confirm:hover{transform:translateY(-2px)}
+.modal-btn.cancel{background:transparent;border:1px solid var(--border2);color:var(--text2)}
+.modal-btn.cancel:hover{background:var(--bg3)}
+.edit-box{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:301;width:min(600px,94vw);max-height:92vh;overflow-y:auto;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:26px;box-shadow:0 28px 70px rgba(0,0,0,.7);display:none}
+.edit-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.edit-title{font-size:.95rem;font-weight:800}
+.edit-close{background:var(--bg4);border:1px solid var(--border2);color:var(--text3);cursor:pointer;width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;transition:all .2s;font-size:.9rem}
+.edit-close:hover{background:rgba(237,31,36,.15);border-color:rgba(237,31,36,.4);color:var(--red)}
+.edit-preview{width:100%;height:100px;object-fit:cover;border-radius:var(--r);display:none}
+.edit-preview-ph{width:100%;height:100px;background:var(--bg3);border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:var(--text3);border:1px solid var(--border)}
+
+/* ── APERÇU CARTE (dans le modal édition) ── */
+.card-preview-wrap{grid-column:1/-1;border-radius:var(--r);overflow:hidden;border:1px solid var(--border2);background:var(--bg3)}
+.card-preview-label{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);padding:8px 12px 6px;background:var(--bg4);border-bottom:1px solid var(--border)}
+
+@media(max-width:600px){.dash-topbar{padding:0 14px}.dash-body{padding:20px 14px}.section-card{padding:18px 14px}}
+.dash-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+</style>
+</head>
+<body>
+
+<!-- AUTH -->
+<div id="auth-screen">
+  <div class="auth-box">
+    <div class="auth-logo">EB</div>
+    <div class="auth-title">Dashboard Admin</div>
+    <div class="auth-sub">ElectraBénin · Gestion des publicités</div>
+    <input class="auth-input" type="password" id="auth-pwd" placeholder="Mot de passe admin" onkeydown="if(event.key==='Enter')doLogin()"/>
+    <button class="auth-btn" onclick="doLogin()">Connexion →</button>
+    <div class="auth-error" id="auth-err">Mot de passe incorrect</div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard">
+
+  <div class="dash-topbar">
+    <div class="dash-brand">
+      <div class="dash-logo">EB</div>
+      <div>
+        <div class="dash-title">Dashboard Admin</div>
+        <div class="dash-sub">ElectraBénin · Gestion des publicités</div>
+      </div>
+    </div>
+    <div class="dash-topbar-actions">
+      <a href="index.html" style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;padding:7px 16px;border-radius:50px;font-family:var(--font);font-size:.72rem;font-weight:600;text-decoration:none;transition:background .2s;white-space:nowrap;" onmouseover="this.style.background='rgba(255,255,255,.28)'" onmouseout="this.style.background='rgba(255,255,255,.15)'">🏠 Accueil</a>
+      <button class="dash-logout" onclick="doLogout()">Déconnexion</button>
+    </div>
+  </div>
+
+  <div class="dash-body">
+
+    <!-- KPIs -->
+    <div class="kpi-grid">
+      <div class="kpi-card"><div class="kpi-label">Total pubs</div><div class="kpi-value" id="kpi-total">0</div></div>
+      <div class="kpi-card"><div class="kpi-label">Actives</div><div class="kpi-value green" id="kpi-active">0</div></div>
+      <div class="kpi-card"><div class="kpi-label">Vues totales</div><div class="kpi-value yellow" id="kpi-views">0</div></div>
+      <div class="kpi-card"><div class="kpi-label">Clics totaux</div><div class="kpi-value red" id="kpi-clicks">0</div></div>
+    </div>
+
+    <!-- CONFIG CAROUSEL -->
+    <div class="section-card">
+      <div class="section-title">⚙️ Configuration du carousel</div>
+      <div class="config-grid">
+        <div class="form-field">
+          <label>Durée par pub (secondes)</label>
+          <input class="form-input" type="number" id="cfg-duration" min="3" max="60" value="10" placeholder="10"/>
+        </div>
+        <div class="form-field">
+          <label>Emplacement affiché</label>
+          <select class="form-select" id="cfg-slot">
+            <option value="both">Accueil + Calculateur</option>
+            <option value="sidebar">Accueil uniquement</option>
+            <option value="bottom">Calculateur uniquement</option>
+          </select>
+        </div>
+        <div class="form-field" style="justify-content:flex-end;">
+          <label>&nbsp;</label>
+          <button class="btn-save" onclick="saveConfig()">💾 Enregistrer</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- AJOUTER PUB -->
+    <div class="section-card">
+      <div class="section-title">➕ Ajouter une publicité</div>
+      <div class="form-grid">
+        <div class="form-field">
+          <label>Nom de la publicité *</label>
+          <input class="form-input" type="text" id="add-name" placeholder="Ex: Boutique Cotonou"/>
+        </div>
+        <div class="form-field">
+          <label>URL de destination (lien clic) *</label>
+          <input class="form-input" type="url" id="add-href" placeholder="https://..."/>
+        </div>
+
+        <!-- Image -->
+        <div class="form-field" style="grid-column:1/-1;">
+          <label>Image (fichier local)</label>
+          <div class="upload-zone" id="add-upload-zone">
+            <input type="file" id="add-img-file" accept="image/*" onchange="handleAddFile(this)" onclick="event.stopPropagation()"/>
+            <div class="upload-zone-text">📁 Cliquer ou glisser une image ici<br/><span style="font-size:.62rem;opacity:.6;">JPG, PNG, WEBP — max 5 Mo</span></div>
+          </div>
+          <img class="img-preview" id="add-img-preview" alt="Aperçu"/>
+        </div>
+        <div class="form-field" style="grid-column:1/-1;">
+          <div class="or-sep">ou URL d'image en ligne</div>
+          <input class="form-input" type="url" id="add-img-url" placeholder="https://example.com/image.jpg" oninput="handleAddUrl(this.value)"/>
+        </div>
+
+        <div class="form-field" style="grid-column:1/-1;">
+          <div class="form-section-label">Contenu affiché sur la carte</div>
+        </div>
+        <div class="form-field">
+          <label>Nom de l'entreprise <span class="hint-inline">(affiché sur la carte)</span></label>
+          <input class="form-input" type="text" id="add-alt" placeholder="Ex: Taco Choco, Boutique Mode…"/>
+        </div>
+        <div class="form-field">
+          <label>Coordonnées <span class="hint-inline">(tél, adresse, WhatsApp…)</span></label>
+          <input class="form-input" type="text" id="add-contact" placeholder="Ex: +229 01 95 78 18 28 · Parakou"/>
+        </div>
+        <div class="form-field" style="grid-column:1/-1;">
+          <label>Description courte <span class="hint-inline">(raison de la pub, offre…)</span></label>
+          <textarea class="form-textarea" id="add-desc" placeholder="Ex: Tacos & Omelettes sur commande · Prix 300F–1200F · Livraison disponible" rows="2"></textarea>
+        </div>
+        <div class="form-field" style="grid-column:1/-1;">
+          <div class="form-section-sep"></div>
+          <div class="form-section-label" style="margin-top:6px;">Paramètres</div>
+        </div>
+        <div class="form-field">
+          <label>Emplacement</label>
+          <select class="form-select" id="add-slot">
+            <option value="both">Accueil + Calculateur</option>
+            <option value="sidebar">Accueil uniquement</option>
+            <option value="bottom">Calculateur uniquement</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Expiration automatique</label>
+          <input class="form-input" type="datetime-local" id="add-expires"/>
+          <span style="font-size:.6rem;color:var(--text3);margin-top:3px;">Vide = pas d'expiration</span>
+        </div>
+        <div class="form-field">
+          <label>Durée individuelle (sec.)</label>
+          <input class="form-input" type="number" id="add-duration" min="3" placeholder="Valeur globale"/>
+        </div>
+      </div>
+      <button class="btn-add-pub" onclick="addPub()">➕ Ajouter la publicité</button>
+    </div>
+
+    <!-- LISTE PUBS -->
+    <div class="section-card">
+      <div class="section-title" style="justify-content:space-between;">
+        <span>📋 Publicités enregistrées</span>
+        <span id="pub-count-label"></span>
+      </div>
+      <div id="pub-list"></div>
+    </div>
+
+  </div><!-- /dash-body -->
+</div><!-- /dashboard -->
+
+<!-- MODAL CONFIRM -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal()"></div>
+<div class="modal-box" id="modal-box" style="display:none;">
+  <div class="modal-title" id="modal-title"></div>
+  <div class="modal-msg" id="modal-msg"></div>
+  <div class="modal-actions">
+    <button class="modal-btn confirm" id="modal-confirm-btn">Confirmer</button>
+    <button class="modal-btn cancel" onclick="closeModal()">Annuler</button>
+  </div>
+</div>
+
+<!-- MODAL EDITION -->
+<div class="edit-overlay" id="edit-overlay" onclick="closeEdit()"></div>
+<div class="edit-box" id="edit-box" style="display:none;">
+  <div class="edit-header">
+    <div class="edit-title">✏️ Modifier la publicité</div>
+    <button class="edit-close" onclick="closeEdit()">✕</button>
+  </div>
+  <div class="form-grid">
+    <div class="form-field">
+      <label>Nom *</label>
+      <input class="form-input" type="text" id="e-name" placeholder="Nom de la pub"/>
+    </div>
+    <div class="form-field">
+      <label>URL de destination *</label>
+      <input class="form-input" type="url" id="e-href" placeholder="https://..."/>
+    </div>
+    <!-- Image actuelle -->
+    <div class="form-field" style="grid-column:1/-1;">
+      <label>Image actuelle</label>
+      <img class="edit-preview" id="e-preview"/>
+      <div class="edit-preview-ph" id="e-preview-ph">🖼</div>
+    </div>
+    <div class="form-field" style="grid-column:1/-1;">
+      <label>Remplacer l'image (fichier)</label>
+      <div class="upload-zone">
+        <input type="file" id="e-img-file" accept="image/*" onchange="handleEditFile(this)" onclick="event.stopPropagation()"/>
+        <div class="upload-zone-text">📁 Nouvelle image</div>
+      </div>
+    </div>
+    <div class="form-field" style="grid-column:1/-1;">
+      <div class="or-sep">ou URL</div>
+      <input class="form-input" type="url" id="e-img-url" placeholder="https://..." oninput="handleEditUrl(this.value)"/>
+    </div>
+    <div class="form-field" style="grid-column:1/-1;">
+      <div class="form-section-label">Contenu affiché sur la carte</div>
+    </div>
+    <div class="form-field">
+      <label>Nom de l'entreprise</label>
+      <input class="form-input" type="text" id="e-alt" placeholder="Nom affiché sur la carte"/>
+    </div>
+    <div class="form-field">
+      <label>Coordonnées <span class="hint-inline">(tél, adresse, WhatsApp…)</span></label>
+      <input class="form-input" type="text" id="e-contact" placeholder="Ex: +229 01 95 78 18 28 · Parakou"/>
+    </div>
+    <div class="form-field" style="grid-column:1/-1;">
+      <label>Description courte</label>
+      <textarea class="form-textarea" id="e-desc" placeholder="Offre, produit, raison de la pub…" rows="2"></textarea>
+    </div>
+    <div class="form-field" style="grid-column:1/-1;">
+      <div class="form-section-sep"></div>
+      <div class="form-section-label" style="margin-top:6px;">Paramètres</div>
+    </div>
+    <div class="form-field">
+      <label>Emplacement</label>
+      <select class="form-select" id="e-slot">
+        <option value="both">Accueil + Calculateur</option>
+        <option value="sidebar">Accueil uniquement</option>
+        <option value="bottom">Calculateur uniquement</option>
+      </select>
+    </div>
+    <div class="form-field">
+      <label>Expiration</label>
+      <input class="form-input" type="datetime-local" id="e-expires"/>
+    </div>
+    <div class="form-field">
+      <label>Durée individuelle (sec.)</label>
+      <input class="form-input" type="number" id="e-duration" min="3"/>
+    </div>
+  </div>
+  <div style="display:flex;gap:10px;margin-top:20px;">
+    <button onclick="saveEdit()" style="flex:1;padding:12px;background:var(--red);border:none;border-radius:var(--r);font-family:var(--font);font-size:.85rem;font-weight:700;color:#fff;cursor:pointer;">💾 Enregistrer</button>
+    <button onclick="closeEdit()" style="padding:12px 18px;background:transparent;border:1px solid var(--border2);border-radius:var(--r);font-family:var(--font);font-size:.8rem;color:var(--text2);cursor:pointer;">Annuler</button>
+  </div>
+</div>
+
+<script>
+/* ════════════════════════════════════════
+   CONFIGURATION — Modifier avant déploiement
+════════════════════════════════════════ */
+var ADMIN_PASSWORD = 'Tanguy@2025';
+var SECRET_TOKEN   = 'bt-admin-10f9k2Z';
+
+var KP='eb_pubs', KC='eb_config', KS='eb_stats';
+function getPubs()  {try{return JSON.parse(localStorage.getItem(KP)||'[]');}catch(e){return[];}}
+function savePubs(p){localStorage.setItem(KP,JSON.stringify(p));}
+function getCfg()   {try{return JSON.parse(localStorage.getItem(KC)||'{}');}catch(e){return{};}}
+function saveCfg(c) {localStorage.setItem(KC,JSON.stringify(c));}
+function getStats() {try{return JSON.parse(localStorage.getItem(KS)||'{}');}catch(e){return{};}}
+function isExpired(p){return p.expires&&new Date(p.expires)<new Date();}
+function fmtDate(s){return s?new Date(s).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}).replace(',',' '):'';}
+
+/* ── AUTH ── */
+function doLogin(){
+  var pwd=document.getElementById('auth-pwd').value;
+  var params=new URLSearchParams(window.location.search);
+  var token=params.get('token');
+  if(pwd===ADMIN_PASSWORD&&(token===SECRET_TOKEN||true)){
+    document.getElementById('auth-screen').style.display='none';
+    document.getElementById('dashboard').style.display='block';
+    initDash();
+  } else {
+    document.getElementById('auth-err').style.display='block';
+  }
+}
+function doLogout(){
+  document.getElementById('dashboard').style.display='none';
+  document.getElementById('auth-screen').style.display='flex';
+  document.getElementById('auth-pwd').value='';
+  document.getElementById('auth-err').style.display='none';
+}
+
+/* ── INIT ── */
+function initDash(){
+  loadConfig();
+  renderPubs();
+  updateStats();
+  setInterval(function(){
+    var pubs=getPubs(),changed=false;
+    pubs.forEach(function(p){if(p.active&&isExpired(p)){p.active=false;changed=true;}});
+    if(changed){savePubs(pubs);renderPubs();updateStats();}
+  },30000);
+}
+
+/* ── CONFIG ── */
+function loadConfig(){
+  var cfg=getCfg();
+  document.getElementById('cfg-duration').value=cfg.duration||10;
+  document.getElementById('cfg-slot').value=cfg.slot||'both';
+}
+function saveConfig(){
+  var dur=parseInt(document.getElementById('cfg-duration').value)||10;
+  var slot=document.getElementById('cfg-slot').value;
+  saveCfg({duration:dur,slot:slot});
+  showToast('Configuration sauvegardée ✓','success');
+}
+
+/* ── STATS KPI ── */
+function updateStats(){
+  var pubs=getPubs(),stats=getStats();
+  var active=pubs.filter(function(p){return p.active&&!isExpired(p);}).length;
+  var views=0,clicks=0;
+  Object.values(stats).forEach(function(s){views+=s.views||0;clicks+=s.clicks||0;});
+  document.getElementById('kpi-total').textContent=pubs.length;
+  document.getElementById('kpi-active').textContent=active;
+  document.getElementById('kpi-views').textContent=views;
+  document.getElementById('kpi-clicks').textContent=clicks;
+}
+
+/* ── UPLOAD image fichier (ajout) ── */
+var addImgData='';
+function handleAddFile(input){
+  var file=input.files[0];
+  if(!file) return;
+  if(file.size>5*1024*1024){showToast('Image trop lourde — max 5 Mo','error');return;}
+  var r=new FileReader();
+  r.onload=function(e){
+    addImgData=e.target.result;
+    document.getElementById('add-img-url').value='';
+    var prev=document.getElementById('add-img-preview');
+    prev.src=addImgData; prev.style.display='block';
+    document.getElementById('add-upload-zone').style.borderColor='var(--green)';
+    showToast('Image chargée ✓','success');
+  };
+  r.readAsDataURL(file);
+}
+function handleAddUrl(url){
+  if(url.trim()){addImgData=url.trim();document.getElementById('add-img-preview').src=url;document.getElementById('add-img-preview').style.display='block';}
+  else{addImgData='';}
+}
+
+/* ── AJOUTER PUB ── */
+function addPub(){
+  var name=document.getElementById('add-name').value.trim();
+  var href=document.getElementById('add-href').value.trim();
+  var alt=document.getElementById('add-alt').value.trim();
+  var contact=document.getElementById('add-contact').value.trim();
+  var desc=document.getElementById('add-desc').value.trim();
+  var slot=document.getElementById('add-slot').value;
+  var expires=document.getElementById('add-expires').value;
+  var dur=document.getElementById('add-duration').value;
+  if(!name){showToast('Le nom est obligatoire','error');return;}
+  if(!href){showToast('Le lien est obligatoire','error');return;}
+  if(!addImgData){showToast('Une image est requise','error');return;}
+  var pubs=getPubs();
+  pubs.push({id:Date.now(),name:name,href:href,img:addImgData,alt:alt||name,contact:contact,desc:desc,slot:slot,active:true,
+    expires:expires||null,duration:dur?parseInt(dur):null,createdAt:new Date().toISOString()});
+  savePubs(pubs);
+  // Reset form
+  document.getElementById('add-name').value='';
+  document.getElementById('add-href').value='';
+  document.getElementById('add-alt').value='';
+  document.getElementById('add-contact').value='';
+  document.getElementById('add-desc').value='';
+  document.getElementById('add-img-url').value='';
+  document.getElementById('add-expires').value='';
+  document.getElementById('add-duration').value='';
+  document.getElementById('add-img-file').value='';
+  document.getElementById('add-img-preview').style.display='none';
+  document.getElementById('add-upload-zone').style.borderColor='';
+  addImgData='';
+  renderPubs(); updateStats();
+  showToast('Publicité ajoutée avec succès ✓','success');
+}
+
+/* ── RENDU LISTE PUBS ── */
+function renderPubs(){
+  var pubs=getPubs(),stats=getStats(),list=document.getElementById('pub-list');
+  var label=document.getElementById('pub-count-label');
+  var activeCount=pubs.filter(function(p){return p.active&&!isExpired(p);}).length;
+  label.textContent=pubs.length===0?'Aucune publicité':pubs.length+' pub'+(pubs.length>1?'s':'')+' · '+activeCount+' active'+(activeCount>1?'s':'');
+  if(pubs.length===0){
+    list.innerHTML='<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">Aucune publicité pour l\'instant.<br/>Ajoutez votre première pub ci-dessus.</div></div>';
+    return;
+  }
+  list.innerHTML=pubs.map(function(p){
+    var expired=isExpired(p);
+    var views=(stats[p.id]||{}).views||0,clicks=(stats[p.id]||{}).clicks||0;
+    var ctr=views>0?((clicks/views)*100).toFixed(1):'0.0';
+    var slotLbl={both:'Accueil + Calculateur',sidebar:'Accueil uniquement',bottom:'Calculateur uniquement'}[p.slot]||p.slot;
+    var statusCls=expired?'red':p.active?'green':'';
+    var statusLbl=expired?'Expirée':p.active?'Active':'Inactive';
+    var dotCls=expired?'expired':p.active?'active':'inactive';
+    var shortHref=p.href?p.href.replace(/^https?:\/\//,'').replace(/\/$/,''):'';
+    var imgHtml=p.img
+      ?('<img class="pub-thumb" src="'+p.img+'" alt="'+p.alt+'" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">'
+        +'<div class="pub-thumb-placeholder" style="display:none"><span class="ph-icon">🖼</span><span class="ph-txt">Pas d\'image</span></div>')
+      :'<div class="pub-thumb-placeholder"><span class="ph-icon">🖼</span><span class="ph-txt">Aucune image</span></div>';
+    var footerRight=p.expires
+      ?('<div class="pub-expires">⏰ '+fmtDate(p.expires)+(expired?' <strong style="color:var(--red)">EXPIRÉE</strong>':'')+'</div>')
+      :(p.href?('<a class="pub-href" href="'+p.href+'" target="_blank">🔗 '+shortHref+'</a>'):'');
+    return (
+      '<div class="pub-card'+((!p.active||expired)?' inactive':'')+'" id="pubcard-'+p.id+'">'
+      +'<div class="pub-thumb-col">'+imgHtml+'<span class="pub-status-dot '+dotCls+'"></span></div>'
+      +'<div class="pub-info">'
+        +'<div class="pub-name">'+p.name+'</div>'
+        +(p.contact?'<div class="pub-contact">📞 '+p.contact+'</div>':'')
+        +(p.desc?'<div class="pub-desc">'+p.desc+'</div>':'')
+        +'<div class="pub-meta">'
+          +'<span class="pub-badge '+statusCls+'">'+statusLbl+'</span>'
+          +'<span class="pub-badge blue">'+slotLbl+'</span>'
+          +(p.duration?'<span class="pub-badge orange">⏱ '+p.duration+'s</span>':'')
+        +'</div>'
+        +'<div class="pub-info-footer">'
+          +'<div class="pub-stats">'
+            +'<span class="pub-stat">👁 <strong>'+views+'</strong></span>'
+            +'<span class="pub-stat">🖱 <strong>'+clicks+'</strong></span>'
+            +'<span class="pub-stat">📈 '+ctr+'%</span>'
+          +'</div>'
+          +footerRight
+        +'</div>'
+      +'</div>'
+      +'<div class="pub-actions">'
+        +'<button class="btn-icon '+(p.active&&!expired?'toggle-on':'toggle-off')+'" onclick="togglePub('+p.id+')" title="'+(p.active&&!expired?'Désactiver':'Activer')+'">'+(p.active&&!expired?'✅':'⏸')+'</button>'
+        +'<button class="btn-icon" onclick="openEdit('+p.id+')" title="Modifier">✏️</button>'
+        +'<button class="btn-icon danger" onclick="confirmDelete('+p.id+')" title="Supprimer">🗑</button>'
+      +'</div>'
+      +'</div>'
+    );
+  }).join('');
+}
+
+function togglePub(id){
+  var pubs=getPubs(),p=pubs.find(function(x){return x.id===id;});
+  if(p){p.active=!p.active;savePubs(pubs);renderPubs();updateStats();
+    showToast(p.active?'Publicité activée ✓':'Publicité désactivée',p.active?'success':'info');}
+}
+
+/* ── SUPPRESSION ── */
+var _deleteId=null;
+function confirmDelete(id){
+  var pubs=getPubs(),p=pubs.find(function(x){return x.id===id;});
+  if(!p) return;
+  _deleteId=id;
+  document.getElementById('modal-title').textContent='Supprimer cette publicité ?';
+  document.getElementById('modal-msg').innerHTML='<strong>'+p.name+'</strong> sera définitivement supprimée. Cette action est irréversible.';
+  document.getElementById('modal-confirm-btn').onclick=function(){
+    var ps=getPubs().filter(function(x){return x.id!==_deleteId;});
+    savePubs(ps); closeModal(); renderPubs(); updateStats();
+    showToast('Publicité supprimée','info');
+  };
+  document.getElementById('modal-overlay').style.display='block';
+  document.getElementById('modal-box').style.display='block';
+}
+function closeModal(){
+  document.getElementById('modal-overlay').style.display='none';
+  document.getElementById('modal-box').style.display='none';
+}
+
+/* ── EDITION ── */
+var _editId=null, _editImg='';
+function openEdit(id){
+  var pubs=getPubs(),p=pubs.find(function(x){return x.id===id;});
+  if(!p) return;
+  _editId=id; _editImg='';
+  document.getElementById('e-name').value=p.name||'';
+  document.getElementById('e-href').value=p.href||'';
+  document.getElementById('e-alt').value=p.alt||'';
+  document.getElementById('e-contact').value=p.contact||'';
+  document.getElementById('e-desc').value=p.desc||'';
+  document.getElementById('e-slot').value=p.slot||'both';
+  document.getElementById('e-expires').value=p.expires||'';
+  document.getElementById('e-duration').value=p.duration||'';
+  document.getElementById('e-img-url').value='';
+  document.getElementById('e-img-file').value='';
+  var prev=document.getElementById('e-preview'),ph=document.getElementById('e-preview-ph');
+  if(p.img){prev.src=p.img;prev.style.display='block';ph.style.display='none';}
+  else{prev.style.display='none';ph.style.display='flex';}
+  document.getElementById('edit-overlay').style.display='block';
+  document.getElementById('edit-box').style.display='block';
+}
+function closeEdit(){
+  document.getElementById('edit-overlay').style.display='none';
+  document.getElementById('edit-box').style.display='none';
+  _editId=null; _editImg='';
+}
+function handleEditFile(input){
+  var file=input.files[0];
+  if(!file) return;
+  if(file.size>5*1024*1024){showToast('Image trop lourde','error');return;}
+  var r=new FileReader();
+  r.onload=function(e){
+    _editImg=e.target.result;
+    document.getElementById('e-img-url').value='';
+    var prev=document.getElementById('e-preview'),ph=document.getElementById('e-preview-ph');
+    prev.src=_editImg; prev.style.display='block'; ph.style.display='none';
+    showToast('Image chargée ✓','success');
+  };
+  r.readAsDataURL(file);
+}
+function handleEditUrl(url){
+  if(url.trim()){_editImg=url.trim();var prev=document.getElementById('e-preview'),ph=document.getElementById('e-preview-ph');prev.src=_editImg;prev.style.display='block';ph.style.display='none';}
+  else _editImg='';
+}
+function saveEdit(){
+  var name=document.getElementById('e-name').value.trim();
+  var href=document.getElementById('e-href').value.trim();
+  if(!name){showToast('Le nom est obligatoire','error');return;}
+  if(!href){showToast('Le lien est obligatoire','error');return;}
+  var pubs=getPubs(),p=pubs.find(function(x){return x.id===_editId;});
+  if(!p) return;
+  p.name=name; p.href=href;
+  p.alt=document.getElementById('e-alt').value.trim()||name;
+  p.contact=document.getElementById('e-contact').value.trim();
+  p.desc=document.getElementById('e-desc').value.trim();
+  p.slot=document.getElementById('e-slot').value;
+  p.expires=document.getElementById('e-expires').value||null;
+  var dur=document.getElementById('e-duration').value;
+  p.duration=dur?parseInt(dur):null;
+  if(_editImg) p.img=_editImg;
+  savePubs(pubs); closeEdit(); renderPubs(); updateStats();
+  showToast('Publicité modifiée ✓','success');
+}
+
+/* ── TOAST ── */
+var _toastTimer=null;
+function showToast(msg,type){
+  var t=document.querySelector('.toast');
+  if(t) t.remove();
+  clearTimeout(_toastTimer);
+  var el=document.createElement('div');
+  el.className='toast '+(type||'info');
+  el.textContent=msg;
+  document.body.appendChild(el);
+  _toastTimer=setTimeout(function(){el.remove();},3200);
+}
+
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){closeModal();closeEdit();}
+});
+
+/* Auto-login si token présent */
+window.addEventListener('DOMContentLoaded',function(){
+  var params=new URLSearchParams(window.location.search);
+  if(params.get('token')===SECRET_TOKEN){
+    document.getElementById('auth-screen').style.display='none';
+    document.getElementById('dashboard').style.display='block';
+    initDash();
+  }
+});
+</script>
+</body>
+</html>

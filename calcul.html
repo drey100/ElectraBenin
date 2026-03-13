@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>ElectraBénin – Calculateur de factures SBEE</title>
+<meta name="description" content="Calculateur de factures SBEE. BT1, BT2, BT3, compteur partagé. Tarifs officiels SBEE."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+<style>
+/* calcul.html — page unique, toujours visible */
+#page-calcul {
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  padding-bottom: 0;        /* plus de padding-bottom, le footer est en dehors */
+}
+/* Footer isolé du carousel, non swipeable */
+#main-footer {
+  position: relative;
+  z-index: 50;
+  touch-action: pan-y;      /* empêche app.js d'intercepter le swipe */
+  user-select: none;
+}
+</style>
+</head>
+<body>
+
+<div id="page-calcul">
+
+  <nav class="topbar">
+    <button class="topbar-back" onclick="window.location.href='index.html'">← Accueil</button>
+    <div class="topbar-brand">
+      <div class="topbar-logo" style="width:34px;height:34px;font-size:.82rem;">EB</div>
+      <div>
+        <div class="topbar-name" style="font-size:.9rem;">ElectraBénin</div>
+        <div class="topbar-tagline">Tarifs officiels SBEE</div>
+      </div>
+    </div>
+    <a href="#" class="topbar-pro-link" style="font-size:.68rem;padding:5px 11px;" onclick="showProComingSoon();return false;">⚡ Pro</a>
+  </nav>
+
+  <div class="calc-header">
+    <div class="pill">Bénin · Basse Tension BT1 / BT2 / BT3</div>
+    <h1>Calculateur <em>Facture Électricité</em></h1>
+    <p class="sub">Calcul identique à la facture officielle SBEE · Tarifs BT1 / BT2 / BT3</p>
+  </div>
+
+  <div class="tarif-legend-wrap">
+    <div class="tarif-legend">
+      <div class="tarif-legend-title">Les 3 tarifs Basse Tension — choisissez le vôtre</div>
+      <div class="tl-grid">
+        <div class="tl-card bt1">
+          <div class="tl-name">BT 1 — Domestique</div>
+          <div class="tl-desc">Lumière & climatisation — particuliers résidentiels</div>
+          <div class="tl-price">86 / 125 / 148 FCFA/kWh</div>
+          <div class="tl-note">3 tranches selon la consommation mensuelle</div>
+        </div>
+        <div class="tl-card bt2">
+          <div class="tl-name">BT 2 — Professionnel</div>
+          <div class="tl-desc">Boutiques, salons, restaurants, bureaux…</div>
+          <div class="tl-price">125 FCFA/kWh (tranche unique)</div>
+          <div class="tl-note">TVA 18% sur consommation + prime fixe</div>
+        </div>
+        <div class="tl-card bt3">
+          <div class="tl-name">BT 3 — Éclairage public</div>
+          <div class="tl-desc">Voirie, places publiques, éclairage collectif</div>
+          <div class="tl-price">133 FCFA/kWh (tranche unique)</div>
+          <div class="tl-note">TVA 18% sur consommation + prime fixe</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-bar-wrap">
+    <div class="tab-bar">
+      <button class="tab active" data-t="calc"    onclick="goTab('calc')"   >⚡ kWh → Facture</button>
+      <button class="tab"        data-t="reverse" onclick="goTab('reverse')">🔍 Facture → kWh</button>
+      <button class="tab"        data-t="split"   onclick="goTab('split')"  >⚖️ Compteur partagé</button>
+    </div>
+  </div>
+
+  <!-- MODE 1 + 2 -->
+  <div class="card-wrap">
+  <div class="card">
+
+    <div id="p-calc" class="panel active">
+      <div class="tarif-selector">
+        <button class="ts-btn bt1 active" id="sel-calc-bt1" onclick="setTarif('calc','BT1')"><span class="ts-label">BT 1</span><span class="ts-sub">Domestique</span></button>
+        <button class="ts-btn bt2"        id="sel-calc-bt2" onclick="setTarif('calc','BT2')"><span class="ts-label">BT 2</span><span class="ts-sub">Professionnel</span></button>
+        <button class="ts-btn bt3"        id="sel-calc-bt3" onclick="setTarif('calc','BT3')"><span class="ts-label">BT 3</span><span class="ts-sub">Éclairage</span></button>
+      </div>
+      <div class="frow c2">
+        <div class="field">
+          <label for="c-kwh">Consommation du mois</label>
+          <div class="iw"><input type="number" id="c-kwh" min="0" placeholder="ex : 15" oninput="liveTrancheCalc(this.value)"/><span class="utag">kWh</span></div>
+          <span class="hint">Relevé du compteur</span>
+          <span class="errmsg" id="ec-kwh">Valeur ≥ 0 requise</span>
+        </div>
+        <div class="field">
+          <label for="c-kva">Puissance souscrite</label>
+          <div class="iw"><input type="number" id="c-kva" min="1" step="1" placeholder="ex : 1"/><span class="utag">kVA</span></div>
+          <span class="hint">Prime fixe = 500 FCFA (valeur fixe SBEE)</span>
+          <span class="errmsg" id="ec-kva">Valeur ≥ 1 requise</span>
+        </div>
+      </div>
+      <div class="tranche-badge" id="tb">
+        <span class="tb-icon"></span>
+        <span class="tb-text"><div class="tb-name"></div><div class="tb-formula"></div></span>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button class="btn ba" style="flex:1" onclick="doCalc()">Calculer →</button>
+        <button class="btn-pro-cta" onclick="showProComingSoon()">📄 Générer la facture</button>
+      </div>
+      <div id="r-calc" class="results">
+        <div class="divider"><span>Facture détaillée</span></div>
+        <div class="ftable">
+          <div class="fth"><div>Rubrique</div><div>Qté</div><div>Prix Unit.</div><div>Montant</div></div>
+          <div id="ft-calc"></div>
+        </div>
+        <div class="netbox a"><span class="nl">💰 NET À PAYER (TTC)</span><span class="nv" id="c-net"></span></div>
+        <button class="btn-pro-banner" onclick="showProComingSoon()">📄 Générer &amp; télécharger cette facture en PDF →</button>
+      </div>
+    </div>
+
+    <div id="p-reverse" class="panel">
+      <div class="tarif-selector">
+        <button class="ts-btn bt1 active" id="sel-rev-bt1" onclick="setTarif('rev','BT1')"><span class="ts-label">BT 1</span><span class="ts-sub">Domestique</span></button>
+        <button class="ts-btn bt2"        id="sel-rev-bt2" onclick="setTarif('rev','BT2')"><span class="ts-label">BT 2</span><span class="ts-sub">Professionnel</span></button>
+        <button class="ts-btn bt3"        id="sel-rev-bt3" onclick="setTarif('rev','BT3')"><span class="ts-label">BT 3</span><span class="ts-sub">Éclairage</span></button>
+      </div>
+      <div class="frow c2">
+        <div class="field">
+          <label for="r-net">Net à payer (sur votre facture)</label>
+          <div class="iw"><input type="number" id="r-net" min="1" placeholder="ex : 2202" class="gf"/><span class="utag">FCFA</span></div>
+          <span class="hint">Montant TTC figurant sur la facture SBEE</span>
+          <span class="errmsg" id="er-net">Montant &gt; 0 requis</span>
+        </div>
+        <div class="field">
+          <label for="r-kva">Puissance souscrite</label>
+          <div class="iw"><input type="number" id="r-kva" min="1" step="1" placeholder="ex : 1" class="gf"/><span class="utag">kVA</span></div>
+          <span class="hint">Indiqué sur votre contrat SBEE</span>
+          <span class="errmsg" id="er-kva">Valeur ≥ 1 requise</span>
+        </div>
+      </div>
+      <button class="btn bg" onclick="doReverse()">Estimer la consommation →</button>
+      <div id="r-rev" class="results">
+        <div class="divider"><span>Résultat</span></div>
+        <div class="kwhbox"><span class="kl">⚡ Consommation estimée</span><span class="kv" id="rev-kwh"></span></div>
+        <div class="sec-t">Vérification — recalcul de la facture</div>
+        <div class="ftable">
+          <div class="fth"><div>Rubrique</div><div>Qté</div><div>Prix Unit.</div><div>Montant</div></div>
+          <div id="ft-rev"></div>
+        </div>
+        <div class="netbox g"><span class="nl">Net à payer recalculé</span><span class="nv" id="rev-net"></span></div>
+        <p style="font-size:.67rem;color:var(--text3);margin-top:8px;">* Arrondi à l'entier le plus proche.</p>
+      </div>
+    </div>
+
+  </div>
+  </div>
+
+  <!-- MODE 3 -->
+  <div class="card-wrap">
+  <div class="card" id="p-split" style="display:none;">
+    <p class="split-intro">Vous partagez un compteur SBEE. Les frais fixes sont divisés <strong>également</strong> entre tous ; le reste est réparti <strong>au prorata des kWh</strong>.</p>
+    <div class="tarif-selector">
+      <button class="ts-btn bt1 active" id="sel-spl-bt1" onclick="setTarif('spl','BT1')"><span class="ts-label">BT 1</span><span class="ts-sub">Domestique</span></button>
+      <button class="ts-btn bt2"        id="sel-spl-bt2" onclick="setTarif('spl','BT2')"><span class="ts-label">BT 2</span><span class="ts-sub">Professionnel</span></button>
+      <button class="ts-btn bt3"        id="sel-spl-bt3" onclick="setTarif('spl','BT3')"><span class="ts-label">BT 3</span><span class="ts-sub">Éclairage</span></button>
+    </div>
+    <div class="frow c2">
+      <div class="field">
+        <label for="spl-total">Montant total de la facture SBEE</label>
+        <div class="iw"><input type="number" id="spl-total" min="1" placeholder="ex : 18 500" class="bf"/><span class="utag">FCFA</span></div>
+        <span class="hint">Le NET À PAYER imprimé sur la facture</span>
+        <span class="errmsg" id="e-spltotal">Montant &gt; 0 requis</span>
+      </div>
+      <div class="field">
+        <label for="spl-nb">Nombre d'utilisateurs</label>
+        <div class="iw"><input type="number" id="spl-nb" min="2" max="7" step="1" placeholder="ex : 3" class="bf" oninput="splNbChange(this.value)"/><span class="utag">pers.</span></div>
+        <span class="hint">Tous ceux qui partagent ce compteur (2 à 7)</span>
+        <span class="errmsg" id="e-splnb">Minimum 2 requis</span>
+      </div>
+    </div>
+    <div id="spl-users-list"></div>
+    <button class="btn-add" id="spl-add-btn" onclick="splAddUser()">＋ Ajouter un utilisateur</button>
+    <button class="btn bb" onclick="doSplit()">Calculer les parts →</button>
+    <div id="r-split" class="results">
+      <div class="divider"><span>Répartition</span></div>
+      <div class="propbar-wrap">
+        <div class="propbar-labels" id="spl-bar-labels"></div>
+        <div class="propbar" id="spl-propbar"></div>
+      </div>
+      <div class="sec-t">Frais fixes partagés</div>
+      <div class="sum-box" id="spl-sum-fixes"></div>
+      <div class="sec-t">Part de chaque utilisateur</div>
+      <div id="spl-res-cards"></div>
+      <div class="reste-box hidden" id="spl-reste-box">
+        <span>⚠️ Écart de calcul</span>
+        <span id="spl-reste-val" style="font-family:var(--mono);"></span>
+      </div>
+      <div class="netbox b"><span class="nl">💰 Total facture SBEE</span><span class="nv" id="spl-total-check"></span></div>
+    </div>
+  </div>
+  </div>
+
+
+
+</div><!-- /page-calcul -->
+
+<footer class="calc-footer" id="main-footer">
+  ElectraBénin © 2025 &nbsp;·&nbsp; Outil non officiel &nbsp;·&nbsp;
+  <a href="#" class="footer-link" onclick="window.location.href='index.html#guide';return false;">Guide</a>
+  &nbsp;·&nbsp;
+  <a href="#" class="footer-link" onclick="window.location.href='index.html#guide';return false;">CGU</a>
+  &nbsp;·&nbsp; BT1 / BT2 / BT3
+</footer>
+
+<!-- ══ MODAL COMING SOON ══ -->
+<style>
+@keyframes cs-overlay-in  {from{opacity:0}to{opacity:1}}
+@keyframes cs-overlay-out {from{opacity:1}to{opacity:0}}
+@keyframes cs-modal-in    {from{opacity:0;transform:translate(-50%,-44%) scale(.88)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+@keyframes cs-modal-out   {from{opacity:1;transform:translate(-50%,-50%) scale(1)}to{opacity:0;transform:translate(-50%,-56%) scale(.88)}}
+@keyframes cs-rocket       {0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-10px) rotate(5deg)}}
+@keyframes cs-stars        {0%{opacity:0;transform:scale(0) rotate(0deg)}60%{opacity:1;transform:scale(1.2) rotate(20deg)}100%{opacity:0;transform:scale(.8) rotate(40deg)}}
+@keyframes cs-item-in      {from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:translateX(0)}}
+@keyframes cs-bar-fill     {from{width:0%}to{width:var(--bar-w)}}
+@keyframes cs-pulse-ring   {0%{transform:scale(1);opacity:.7}100%{transform:scale(1.9);opacity:0}}
+#cs-overlay{display:none;position:fixed;inset:0;background:rgba(10,10,20,.62);z-index:2000;backdrop-filter:blur(6px);}
+#cs-overlay.cs-show{animation:cs-overlay-in .28s ease forwards;}
+#cs-overlay.cs-hide{animation:cs-overlay-out .26s ease forwards;}
+#cs-modal{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:2001;width:min(420px,92vw);background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 32px 90px rgba(0,0,0,.32);text-align:center;}
+#cs-modal.cs-show{animation:cs-modal-in .36s cubic-bezier(.34,1.52,.64,1) forwards;}
+#cs-modal.cs-hide{animation:cs-modal-out .24s ease forwards;}
+.cs-header{background:linear-gradient(145deg,#ed1f24,#a01015);padding:32px 26px 26px;position:relative;overflow:hidden;}
+.cs-grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.05)1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05)1px,transparent 1px);background-size:24px 24px;}
+.cs-gold-bar{position:absolute;bottom:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#f9a825,#ffcc02,#f9a825);}
+.cs-rocket-wrap{position:relative;display:inline-block;margin-bottom:12px;}
+.cs-rocket{font-size:3rem;display:inline-block;animation:cs-rocket 2.4s ease-in-out infinite;}
+.cs-pulse{position:absolute;inset:-6px;border-radius:50%;border:2px solid rgba(255,255,255,.4);animation:cs-pulse-ring 1.8s ease-out infinite;}
+.cs-star{position:absolute;font-size:.9rem;animation:cs-stars 2s ease-out infinite;}
+.cs-star:nth-child(2){top:-4px;right:-10px;animation-delay:.4s;}
+.cs-star:nth-child(3){bottom:2px;left:-12px;animation-delay:.9s;}
+.cs-star:nth-child(4){top:6px;left:-8px;animation-delay:1.5s;font-size:.65rem;}
+.cs-title{font-size:1.25rem;font-weight:800;color:#fff;line-height:1.3;font-family:'Poppins',sans-serif;position:relative;z-index:1;}
+.cs-subtitle{font-size:.74rem;color:rgba(255,255,255,.78);margin-top:6px;font-family:'Poppins',sans-serif;position:relative;z-index:1;}
+.cs-body{padding:22px 24px 26px;}
+.cs-progress-wrap{margin:0 0 18px;text-align:left;}
+.cs-progress-label{font-family:'Poppins',sans-serif;font-size:.7rem;color:#8a909e;display:flex;justify-content:space-between;margin-bottom:6px;}
+.cs-progress-track{height:8px;background:#f0f1f4;border-radius:99px;overflow:hidden;}
+.cs-progress-bar{--bar-w:72%;height:100%;width:0%;background:linear-gradient(90deg,#ed1f24,#f9a825);border-radius:99px;transition:none;}
+.cs-progress-bar.animated{animation:cs-bar-fill 1.1s .5s cubic-bezier(.22,1,.36,1) forwards;}
+.cs-features{display:flex;flex-direction:column;gap:8px;margin-bottom:18px;text-align:left;}
+.cs-feat{display:flex;align-items:center;gap:10px;font-family:'Poppins',sans-serif;font-size:.8rem;color:#1a1d23;opacity:0;}
+.cs-feat.animated{animation:cs-item-in .4s ease forwards;}
+.cs-feat:nth-child(1){animation-delay:.15s;}.cs-feat:nth-child(2){animation-delay:.28s;}
+.cs-feat:nth-child(3){animation-delay:.41s;}.cs-feat:nth-child(4){animation-delay:.54s;}
+.cs-feat-dot{width:20px;height:20px;min-width:20px;background:rgba(237,31,36,.1);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.6rem;color:#ed1f24;font-weight:700;}
+.cs-notice{display:flex;align-items:center;gap:1ine-height:1.5;}
+.cs-btn{display:block;width:100%;padding:14px;background:linear-gradient(135deg,#ed1f24,#c0151a);border:none;border-radius:12px;font-family:'Poppins',sans-serif;font-size:.9rem;font-weight:700;color:#fff;cursor:pointer;box-shadow:0 6px 22px rgba(237,31,36,.36);}
+</style>
+<div id="cs-overlay" onclick="hideProComingSoon()"></div>
+<div id="cs-modal">
+  <div class="cs-header">
+    <div class="cs-grid-bg"></div><div class="cs-gold-bar"></div>
+    <div style="position:relative;z-index:1;">
+      <div class="cs-rocket-wrap">
+        <div class="cs-pulse"></div>
+        <span class="cs-star">✨</span><span class="cs-star">⭐</span><span class="cs-star">✦</span>
+        <div class="cs-rocket">🚀</div>
+      </div>
+      <div class="cs-title">Version Pro<br/>Bientôt disponible !</div>
+      <div class="cs-subtitle">Nous y travaillons activement pour vous</div>
+    </div>
+  </div>
+  <div class="cs-body">
+    <div class="cs-progress-wrap">
+      <div class="cs-progress-label"><span>Développement en cours</span><span>72%</span></div>
+      <div class="cs-progress-track"><div class="cs-progress-bar" id="cs-bar"></div></div>
+    </div>
+    <div class="cs-features" id="cs-feats">
+      <div class="cs-feat"><div class="cs-feat-dot">✓</div>Génération de factures PDF professionnelles</div>
+      <div class="cs-feat"><div class="cs-feat-dot">✓</div>Compteur partagé jusqu'à <strong>20 personnes</strong></div>
+      <div class="cs-feat"><div class="cs-feat-dot">✓</div>Nom, adresse, numéro de compteur sur chaque facture</div>
+      <div class="cs-feat"><div class="cs-feat-dot">✓</div>Aperçu de la facture en temps réel</div>
+    </div>
+    <div class="cs-notice"><span style="font-size:1.3rem;">⏳</span><span>La version Pro sera disponible <strong>très prochainement</strong>. Merci pour votre patience !</span></div>
+    <button class="cs-btn" onclick="hideProComingSoon()">Compris, merci ! 👍</button>
+  </div>
+</div>
+<script>
+function showProComingSoon(){
+  var o=document.getElementById('cs-overlay'),m=document.getElementById('cs-modal');
+  var bar=document.getElementById('cs-bar'),feats=document.querySelectorAll('#cs-feats .cs-feat');
+  o.style.display='block'; m.style.display='block'; document.body.style.overflow='hidden';
+  requestAnimationFrame(function(){
+    o.classList.remove('cs-hide'); o.classList.add('cs-show');
+    m.classList.remove('cs-hide'); m.classList.add('cs-show');
+    bar.classList.remove('animated'); feats.forEach(function(f){f.classList.remove('animated');});
+    void bar.offsetWidth;
+    bar.classList.add('animated'); feats.forEach(function(f){void f.offsetWidth;f.classList.add('animated');});
+  });
+}
+function hideProComingSoon(){
+  var o=document.getElementById('cs-overlay'),m=document.getElementById('cs-modal');
+  o.classList.remove('cs-show'); o.classList.add('cs-hide');
+  m.classList.remove('cs-show'); m.classList.add('cs-hide');
+  setTimeout(function(){o.style.display='none';m.style.display='none';document.body.style.overflow='';},260);
+}
+document.addEventListener('keydown',function(e){if(e.key==='Escape')hideProComingSoon();});
+</script>
+
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+<script src="app.js"></script>
+<script>
+/* ── Navigation calcul.html ─────────────────────────────── */
+function startApp()  { window.location.href = 'calcul.html'; }
+function goBack()    { window.location.href = 'index.html'; }
+function goGuide()   { window.location.href = 'index.html#guide'; }
+</script>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   ElectraBénin — Ad Card Observer v2
+   Lit contact + desc depuis localStorage et construit les cartes.
+═══════════════════════════════════════════════════════════ */
+(function(){
+  var KP='eb_pubs';
+  var IMG_H_D=220,IMG_H_M=165;
+  function isMobile(){return window.innerWidth<=540;}
+  function getH(){return isMobile()?IMG_H_M:IMG_H_D;}
+  function getPubs(){try{return JSON.parse(localStorage.getItem(KP)||'[]');}catch(e){return[];}}
+  function matchPub(card){
+    var img=card.querySelector('img');
+    if(!img||!img.src)return null;
+    var pubs=getPubs();
+    return pubs.find(function(p){return p.img&&img.src.indexOf(p.img.slice(0,40))>-1;})||null;
+  }
+  function fixCard(card){
+    if(card.dataset.ebFixed==='2')return;
+    card.dataset.ebFixed='2';
+    Object.assign(card.style,{background:'#fff',border:'1px solid #e2e5ea',borderRadius:'16px',
+      overflow:'hidden',display:'flex',flexDirection:'column',
+      boxShadow:'0 2px 14px rgba(0,0,0,.07),0 1px 3px rgba(0,0,0,.04)',
+      minWidth:card.classList.contains('sw-card')?'100%':''});
+    var imgLink=card.querySelector('a'),img=card.querySelector('img');
+    if(imgLink){Object.assign(imgLink.style,{display:'block',width:'100%',
+      height:getH()+'px',maxHeight:getH()+'px',overflow:'hidden',flexShrink:'0',
+      position:'relative',background:'#f4f5f7',textDecoration:'none'});}
+    if(img){Object.assign(img.style,{width:'100%',height:'100%',maxWidth:'100%',maxHeight:'100%',
+      objectFit:'cover',objectPosition:'center top',display:'block'});}
+    window.addEventListener('resize',function(){
+      if(imgLink){imgLink.style.height=getH()+'px';imgLink.style.maxHeight=getH()+'px';}
+    },{passive:true});
+    var pub=matchPub(card);
+    var pubName=(pub&&pub.alt)||(pub&&pub.name)||'Publicité';
+    var pubContact=(pub&&pub.contact)||'';
+    var pubDesc=(pub&&pub.desc)||'';
+    var pubHref=(pub&&pub.href)||(imgLink&&imgLink.href)||'#';
+    Array.from(card.children).forEach(function(child){
+      if(child===imgLink)return;
+      if(child.classList.contains('eb-obs-header'))return;
+      if(child.classList.contains('eb-obs-footer'))return;
+      if(!child.querySelector('img'))child.style.display='none';
+    });
+    if(!card.querySelector('.eb-obs-header')){
+      var hdr=document.createElement('div');
+      hdr.className='eb-obs-header';
+      Object.assign(hdr.style,{padding:'9px 14px 7px',display:'flex',alignItems:'center',
+        justifyContent:'space-between',borderBottom:'1px solid #f0f1f3',flexShrink:'0',background:'#fff'});
+      hdr.innerHTML='<span style="font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#aab0be;">📢 Publicité</span><span style="font-size:.65rem;color:#aab0be;">›</span>';
+      card.insertBefore(hdr,card.firstChild);
+    }
+    var ef=card.querySelector('.eb-obs-footer');if(ef)ef.remove();
+    var ftr=document.createElement('div');
+    ftr.className='eb-obs-footer';
+    Object.assign(ftr.style,{padding:'12px 14px 14px',display:'flex',flexDirection:'column',
+      gap:'5px',borderTop:'1px solid #f0f1f3',background:'#fff',flexShrink:'0'});
+    var nameEl=document.createElement('div');
+    Object.assign(nameEl.style,{fontSize:'.86rem',fontWeight:'700',color:'#1a1d23',
+      whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis',lineHeight:'1.3'});
+    nameEl.textContent=pubName; ftr.appendChild(nameEl);
+    if(pubContact){
+      var cel=document.createElement('a');
+      cel.href=pubHref; cel.target='_blank';
+      Object.assign(cel.style,{fontSize:'.72rem',color:'#3b5998',fontWeight:'600',
+        textDecoration:'none',display:'flex',alignItems:'center',gap:'5px',
+        whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'});
+      cel.innerHTML='📞 '+pubContact; ftr.appendChild(cel);
+    }
+    if(pubDesc){
+      var del=document.createElement('div');
+      Object.assign(del.style,{fontSize:'.72rem',color:'#5a6272',lineHeight:'1.5',
+        display:'-webkit-box',WebkitLineClamp:'2',WebkitBoxOrient:'vertical',overflow:'hidden',marginTop:'1px'});
+      del.textContent=pubDesc; ftr.appendChild(del);
+    }
+    card.appendChild(ftr);
+  }
+  function fixAll(){
+    document.querySelectorAll('.sw-card:not([id="sw-placeholder"]),.eb-ad-card').forEach(fixCard);
+  }
+  var observer=new MutationObserver(function(mutations){
+    mutations.forEach(function(m){
+      m.addedNodes.forEach(function(node){
+        if(node.nodeType!==1)return;
+        if(node.classList.contains('sw-card')&&node.id!=='sw-placeholder')fixCard(node);
+        if(node.classList.contains('eb-ad-card'))fixCard(node);
+        if(node.querySelectorAll)node.querySelectorAll('.sw-card:not([id="sw-placeholder"]),.eb-ad-card').forEach(fixCard);
+      });
+      if(m.target){
+        var card=m.target.closest('.sw-card,.eb-ad-card');
+        if(card&&card.id!=='sw-placeholder'&&!card.dataset.ebFixed){setTimeout(function(){fixCard(card);},50);}
+        if(m.target.tagName==='IMG'&&m.target.src){
+          var pc=m.target.closest('.sw-card,.eb-ad-card');
+          if(pc&&pc.id!=='sw-placeholder'){delete pc.dataset.ebFixed;setTimeout(function(){fixCard(pc);},80);}
+        }
+      }
+    });
+  });
+  function init(){
+    fixAll();
+    observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['src']});
+  }
+  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',init);}
+  else{init();setTimeout(fixAll,500);setTimeout(fixAll,1500);}
+})();
+</script>
+
+
+<script>
+/* Bloquer la propagation des événements touch sur le footer
+   pour qu'app.js ne l'interprète pas comme un swipe de carousel */
+(function() {
+  function stopProp(e) { e.stopPropagation(); }
+  var ft = document.getElementById('main-footer');
+  if (ft) {
+    ft.addEventListener('touchstart', stopProp, { passive: true });
+    ft.addEventListener('touchmove',  stopProp, { passive: true });
+    ft.addEventListener('touchend',   stopProp, { passive: true });
+  }
+})();
+</script>
+</body>
+</html>
