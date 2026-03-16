@@ -82,6 +82,7 @@
       <button class="sw-arrow sw-arrow-left"  onclick="swPrev()">&#8249;</button>
       <button class="sw-arrow sw-arrow-right" onclick="swNext()">&#8250;</button>
     </div>
+    <div id="sw-footer-zone"></div>
     <div class="sw-dots" id="sw-dots"></div>
     <div class="sw-progress"><div class="sw-bar" id="sw-bar"></div></div>
   </div>
@@ -498,7 +499,7 @@
             </svg>
           </div>
           <div class="collab-card-label">LinkedIn</div>
-          <a href="https://www.linkedin.com/in/tanguy-kakpo-b6b2b7240" class="collab-card-value" target="_blank" rel="noopener" style="color:#0a66c2;">Tanguy Kakpo</a>
+          <a href="https://www.linkedin.com/in/tanguy-kakpo-b6b2b7240" class="collab-card-value" target="_blank" rel="noopener" style="color:#0a66c2;">Tanguy KAKPO</a>
           <div class="collab-card-hint">Connexion professionnelle</div>
         </div>
 
@@ -512,28 +513,47 @@
             </svg>
           </div>
           <div class="collab-card-label">Nous écrire</div>
-          <form id="contact-form" name="contact" method="POST" data-netlify="true" data-netlify-honeypot="bot-field" novalidate>
-            <input type="hidden" name="form-name" value="contact"/>
-            <input type="hidden" name="bot-field" style="display:none"/>
+          <form id="contact-form" novalidate>
             <div class="cf-field">
-              <input type="text" name="nom" placeholder="Votre nom" required class="cf-input"/>
+              <input type="text" id="cf-nom" placeholder="Votre nom" required class="cf-input"/>
             </div>
             <div class="cf-field">
-              <input type="email" name="email" placeholder="Votre email" required class="cf-input"/>
+              <input type="email" id="cf-email" placeholder="Votre email" required class="cf-input"/>
             </div>
             <div class="cf-field">
-              <textarea name="message" placeholder="Votre message…" rows="3" required class="cf-input cf-textarea"></textarea>
+              <textarea id="cf-message" placeholder="Votre message…" rows="3" required class="cf-input cf-textarea"></textarea>
             </div>
-            <button type="submit" class="cf-btn">Envoyer ✉️</button>
+            <button type="submit" class="cf-btn" id="cf-btn">Envoyer ✉️</button>
             <div class="cf-success" id="cf-success" style="display:none;">✅ Message envoyé ! Réponse sous 24h.</div>
           </form>
+          <script>
+          document.getElementById('contact-form').addEventListener('submit',function(e){
+            e.preventDefault();
+            var nom=document.getElementById('cf-nom').value.trim();
+            var email=document.getElementById('cf-email').value.trim();
+            var message=document.getElementById('cf-message').value.trim();
+            if(!nom||!email||!message){return;}
+            var btn=document.getElementById('cf-btn');
+            btn.disabled=true; btn.textContent='Envoi…';
+            fetch(EB_API.contact,{method:'POST',headers:{'Content-Type':'application/json'},
+              body:JSON.stringify({nom:nom,email:email,message:message})})
+            .then(function(){
+              document.getElementById('contact-form').reset();
+              btn.style.display='none';
+              document.getElementById('cf-success').style.display='block';
+            }).catch(function(){
+              btn.disabled=false; btn.textContent='Envoyer ✉️';
+              alert('Erreur réseau — réessayez.');
+            });
+          });
+          </script>
         </div>
       </div>
 
-      <!-- <div class="collab-note">
+      <div class="collab-note">
         <span class="collab-note-icon">💡</span>
-        <span>Les espaces publicitaires se gèrent depuis le <strong>dashboard admin</strong> (dashboard.html). Upload d'image, lien, durée d'affichage — tout est configurable.</span>
-      </div> -->
+        <span>Les espaces publicitaires se gèrent depuis le <strong>dashboard admin</strong> Upload d'image, lien, durée d'affichage — tout est configurable.</span>
+      </div>
     </section>
 
     <footer class="home-footer" style="margin-top:0;">
@@ -545,7 +565,8 @@
 </div><!-- /page-guide -->
 
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="app.js">
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="config.js"></script>
+<script src="app.js">
 /* ── Netlify Form — soumission AJAX (pas de rechargement) ── */
 (function(){
   var form = document.getElementById('contact-form');
@@ -664,6 +685,9 @@ function hideProComingSoon(){
   var o=document.getElementById('cs-overlay'),m=document.getElementById('cs-modal');
   o.classList.remove('cs-show'); o.classList.add('cs-hide');
   m.classList.remove('cs-show'); m.classList.add('cs-hide');
-  setTimeout(function(){ o.style.display='none'; m.style.display='none'; document.body.style.overflow='auto'; }, 400);
+  m.addEventListener('animationend',function handler(){
+    o.style.display='none'; m.style.display='none'; document.body.style.overflow='';
+    m.removeEventListener('animationend',handler);
+  });
 }
 </script>

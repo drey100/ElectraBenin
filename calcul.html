@@ -317,6 +317,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')hideProComin
 
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+<script src="config.js"></script>
 <script src="app.js"></script>
 <script>
 /* ── Navigation calcul.html ─────────────────────────────── */
@@ -326,110 +327,6 @@ function goGuide()   { window.location.href = 'index.html#guide'; }
 </script>
 
 <script>
-/* ═══════════════════════════════════════════════════════════
-   ElectraBénin — Ad Card Observer v2
-   Lit contact + desc depuis localStorage et construit les cartes.
-═══════════════════════════════════════════════════════════ */
-(function(){
-  var KP='eb_pubs';
-  var IMG_H_D=220,IMG_H_M=165;
-  function isMobile(){return window.innerWidth<=540;}
-  function getH(){return isMobile()?IMG_H_M:IMG_H_D;}
-  function getPubs(){try{return JSON.parse(localStorage.getItem(KP)||'[]');}catch(e){return[];}}
-  function matchPub(card){
-    var img=card.querySelector('img');
-    if(!img||!img.src)return null;
-    var pubs=getPubs();
-    return pubs.find(function(p){return p.img&&img.src.indexOf(p.img.slice(0,40))>-1;})||null;
-  }
-  function fixCard(card){
-    if(card.dataset.ebFixed==='2')return;
-    card.dataset.ebFixed='2';
-    Object.assign(card.style,{background:'#fff',border:'1px solid #e2e5ea',borderRadius:'16px',
-      overflow:'hidden',display:'flex',flexDirection:'column',
-      boxShadow:'0 2px 14px rgba(0,0,0,.07),0 1px 3px rgba(0,0,0,.04)',
-      minWidth:card.classList.contains('sw-card')?'100%':''});
-    var imgLink=card.querySelector('a'),img=card.querySelector('img');
-    if(imgLink){Object.assign(imgLink.style,{display:'block',width:'100%',
-      height:getH()+'px',maxHeight:getH()+'px',overflow:'hidden',flexShrink:'0',
-      position:'relative',background:'#f4f5f7',textDecoration:'none'});}
-    if(img){Object.assign(img.style,{width:'100%',height:'100%',maxWidth:'100%',maxHeight:'100%',
-      objectFit:'cover',objectPosition:'center top',display:'block'});}
-    window.addEventListener('resize',function(){
-      if(imgLink){imgLink.style.height=getH()+'px';imgLink.style.maxHeight=getH()+'px';}
-    },{passive:true});
-    var pub=matchPub(card);
-    var pubName=(pub&&pub.alt)||(pub&&pub.name)||'Publicité';
-    var pubContact=(pub&&pub.contact)||'';
-    var pubDesc=(pub&&pub.desc)||'';
-    var pubHref=(pub&&pub.href)||(imgLink&&imgLink.href)||'#';
-    Array.from(card.children).forEach(function(child){
-      if(child===imgLink)return;
-      if(child.classList.contains('eb-obs-header'))return;
-      if(child.classList.contains('eb-obs-footer'))return;
-      if(!child.querySelector('img'))child.style.display='none';
-    });
-    if(!card.querySelector('.eb-obs-header')){
-      var hdr=document.createElement('div');
-      hdr.className='eb-obs-header';
-      Object.assign(hdr.style,{padding:'9px 14px 7px',display:'flex',alignItems:'center',
-        justifyContent:'space-between',borderBottom:'1px solid #f0f1f3',flexShrink:'0',background:'#fff'});
-      hdr.innerHTML='<span style="font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#aab0be;">📢 Publicité</span><span style="font-size:.65rem;color:#aab0be;">›</span>';
-      card.insertBefore(hdr,card.firstChild);
-    }
-    var ef=card.querySelector('.eb-obs-footer');if(ef)ef.remove();
-    var ftr=document.createElement('div');
-    ftr.className='eb-obs-footer';
-    Object.assign(ftr.style,{padding:'12px 14px 14px',display:'flex',flexDirection:'column',
-      gap:'5px',borderTop:'1px solid #f0f1f3',background:'#fff',flexShrink:'0'});
-    var nameEl=document.createElement('div');
-    Object.assign(nameEl.style,{fontSize:'.86rem',fontWeight:'700',color:'#1a1d23',
-      whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis',lineHeight:'1.3'});
-    nameEl.textContent=pubName; ftr.appendChild(nameEl);
-    if(pubContact){
-      var cel=document.createElement('a');
-      cel.href=pubHref; cel.target='_blank';
-      Object.assign(cel.style,{fontSize:'.72rem',color:'#3b5998',fontWeight:'600',
-        textDecoration:'none',display:'flex',alignItems:'center',gap:'5px',
-        whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'});
-      cel.innerHTML='📞 '+pubContact; ftr.appendChild(cel);
-    }
-    if(pubDesc){
-      var del=document.createElement('div');
-      Object.assign(del.style,{fontSize:'.72rem',color:'#5a6272',lineHeight:'1.5',
-        display:'-webkit-box',WebkitLineClamp:'2',WebkitBoxOrient:'vertical',overflow:'hidden',marginTop:'1px'});
-      del.textContent=pubDesc; ftr.appendChild(del);
-    }
-    card.appendChild(ftr);
-  }
-  function fixAll(){
-    document.querySelectorAll('.sw-card:not([id="sw-placeholder"]),.eb-ad-card').forEach(fixCard);
-  }
-  var observer=new MutationObserver(function(mutations){
-    mutations.forEach(function(m){
-      m.addedNodes.forEach(function(node){
-        if(node.nodeType!==1)return;
-        if(node.classList.contains('sw-card')&&node.id!=='sw-placeholder')fixCard(node);
-        if(node.classList.contains('eb-ad-card'))fixCard(node);
-        if(node.querySelectorAll)node.querySelectorAll('.sw-card:not([id="sw-placeholder"]),.eb-ad-card').forEach(fixCard);
-      });
-      if(m.target){
-        var card=m.target.closest('.sw-card,.eb-ad-card');
-        if(card&&card.id!=='sw-placeholder'&&!card.dataset.ebFixed){setTimeout(function(){fixCard(card);},50);}
-        if(m.target.tagName==='IMG'&&m.target.src){
-          var pc=m.target.closest('.sw-card,.eb-ad-card');
-          if(pc&&pc.id!=='sw-placeholder'){delete pc.dataset.ebFixed;setTimeout(function(){fixCard(pc);},80);}
-        }
-      }
-    });
-  });
-  function init(){
-    fixAll();
-    observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['src']});
-  }
-  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',init);}
-  else{init();setTimeout(fixAll,500);setTimeout(fixAll,1500);}
-})();
 </script>
 
 
