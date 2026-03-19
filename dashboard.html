@@ -338,6 +338,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
             <option value="both">Accueil + Calculateur</option>
             <option value="sidebar">Accueil uniquement</option>
             <option value="bottom">Calculateur uniquement</option>
+            <option value="interstitiel">Interstitiel uniquement</option>
+            <option value="all">Carousel + Interstitiel</option>
           </select>
         </div>
         <div class="form-field">
@@ -438,6 +440,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
         <option value="both">Accueil + Calculateur</option>
         <option value="sidebar">Accueil uniquement</option>
         <option value="bottom">Calculateur uniquement</option>
+        <option value="interstitiel">Interstitiel uniquement</option>
+        <option value="all">Carousel + Interstitiel</option>
       </select>
     </div>
     <div class="form-field">
@@ -628,7 +632,7 @@ function renderPubs() {
       var views    = p.views  || 0;
       var clicks   = p.clicks || 0;
       var ctr      = views > 0 ? ((clicks / views) * 100).toFixed(1) : '0.0';
-      var slotLbl  = { both:'Accueil + Calcul', sidebar:'Accueil', bottom:'Calculateur' }[p.slot] || p.slot;
+      var slotLbl  = { both:'Accueil + Calcul', sidebar:'Accueil', bottom:'Calculateur', interstitiel:'Interstitiel', all:'Carousel + Interstitiel' }[p.slot] || p.slot;
       var stCls    = expired ? 'red' : p.active ? 'green' : '';
       var stLbl    = expired ? 'Expirée' : p.active ? 'Active' : 'Inactive';
       var dotCls   = expired ? 'expired' : p.active ? 'active' : 'inactive';

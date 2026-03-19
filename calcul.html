@@ -231,10 +231,10 @@
 @keyframes cs-item-in      {from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:translateX(0)}}
 @keyframes cs-bar-fill     {from{width:0%}to{width:var(--bar-w)}}
 @keyframes cs-pulse-ring   {0%{transform:scale(1);opacity:.7}100%{transform:scale(1.9);opacity:0}}
-#cs-overlay{display:none;position:fixed;inset:0;background:rgba(10,10,20,.62);z-index:2000;backdrop-filter:blur(6px);}
+#cs-overlay{display:none;position:fixed;inset:0;background:rgba(10,10,20,.62);z-index:9990;backdrop-filter:blur(6px);}
 #cs-overlay.cs-show{animation:cs-overlay-in .28s ease forwards;}
 #cs-overlay.cs-hide{animation:cs-overlay-out .26s ease forwards;}
-#cs-modal{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:2001;width:min(420px,92vw);background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 32px 90px rgba(0,0,0,.32);text-align:center;}
+#cs-modal{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9991;width:min(420px,92vw);background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 32px 90px rgba(0,0,0,.32);text-align:center;}
 #cs-modal.cs-show{animation:cs-modal-in .36s cubic-bezier(.34,1.52,.64,1) forwards;}
 #cs-modal.cs-hide{animation:cs-modal-out .24s ease forwards;}
 .cs-header{background:linear-gradient(145deg,#ed1f24,#a01015);padding:32px 26px 26px;position:relative;overflow:hidden;}
@@ -261,7 +261,7 @@
 .cs-feat:nth-child(1){animation-delay:.15s;}.cs-feat:nth-child(2){animation-delay:.28s;}
 .cs-feat:nth-child(3){animation-delay:.41s;}.cs-feat:nth-child(4){animation-delay:.54s;}
 .cs-feat-dot{width:20px;height:20px;min-width:20px;background:rgba(237,31,36,.1);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.6rem;color:#ed1f24;font-weight:700;}
-.cs-notice{display:flex;align-items:center;gap:1ine-height:1.5;}
+.cs-notice{display:flex;align-items:center;gap:10px;line-height:1.5;}
 .cs-btn{display:block;width:100%;padding:14px;background:linear-gradient(135deg,#ed1f24,#c0151a);border:none;border-radius:12px;font-family:'Poppins',sans-serif;font-size:.9rem;font-weight:700;color:#fff;cursor:pointer;box-shadow:0 6px 22px rgba(237,31,36,.36);}
 </style>
 <div id="cs-overlay" onclick="hideProComingSoon()"></div>

@@ -69,23 +69,7 @@
     <p class="cta-note">Gratuit · Sans inscription · Données jamais transmises</p>
   </div>
 
-  <!-- Swipe Ads -->
-  <div class="sw-wrap" id="sw-wrap">
-    <div class="sw-label">Publicité</div>
-    <div class="sw-outer" id="sw-outer">
-      <div class="sw-track" id="sw-track">
-        <div class="sw-card sw-active sw-placeholder" id="sw-placeholder">
-          <span class="sw-ph-icon">📢</span>
-          <span class="sw-ph-text">Votre publicité ici</span>
-        </div>
-      </div>
-      <button class="sw-arrow sw-arrow-left"  onclick="swPrev()">&#8249;</button>
-      <button class="sw-arrow sw-arrow-right" onclick="swNext()">&#8250;</button>
-    </div>
-    <div id="sw-footer-zone"></div>
-    <div class="sw-dots" id="sw-dots"></div>
-    <div class="sw-progress"><div class="sw-bar" id="sw-bar"></div></div>
-  </div>
+
 
   <!-- Bandeau Pro -->
   <div class="pro-promo-banner" style="margin-top:28px;">
@@ -323,26 +307,7 @@
   </div>
 
   <!-- Carousel Ads calculateur -->
-  <div class="eb-ad-wrap" id="eb-ad-wrap-calc">
-    <div class="eb-ad-label">Publicité</div>
-    <div class="eb-ad-stage">
-      <div class="eb-ad-card active" id="eb-ad-calc-0">
-        <a class="eb-ad-link" href="#" target="_blank">
-          <div class="eb-ad-shimmer"></div>
-          <img class="eb-ad-img" src="" alt=""/>
-          <div class="eb-ad-placeholder"><span class="eb-ad-ph-icon">📢</span><span class="eb-ad-ph-text">Votre publicité ici</span></div>
-        </a>
-      </div>
-      <div class="eb-ad-card" id="eb-ad-calc-1">
-        <a class="eb-ad-link" href="#" target="_blank">
-          <div class="eb-ad-shimmer"></div>
-          <img class="eb-ad-img" src="" alt=""/>
-          <div class="eb-ad-placeholder"><span class="eb-ad-ph-icon">📢</span><span class="eb-ad-ph-text">Votre publicité ici</span></div>
-        </a>
-      </div>
-    </div>
-    <div class="eb-ad-progress"><div class="eb-ad-bar" id="eb-ad-bar-calc"></div></div>
-  </div>
+
 
   <footer class="calc-footer">
     ElectraBénin © 2025 &nbsp;·&nbsp; Outil non officiel &nbsp;·&nbsp;
@@ -499,7 +464,7 @@
             </svg>
           </div>
           <div class="collab-card-label">LinkedIn</div>
-         <a href="https://www.linkedin.com/in/tanguy-kakpo-b6b2b7240" class="collab-card-value" target="_blank" rel="noopener" style="color:#0a66c2;">Tanguy KAKPO</a>
+           <a href="https://www.linkedin.com/in/tanguy-kakpo-b6b2b7240" class="collab-card-value" target="_blank" rel="noopener" style="color:#0a66c2;">Tanguy KAKPO</a>
           <div class="collab-card-hint">Connexion professionnelle</div>
         </div>
 
@@ -552,7 +517,7 @@
 
       <div class="collab-note">
         <span class="collab-note-icon">💡</span>
-        <span>Les espaces publicitaires se gèrent depuis le <strong>dashboard admin</strong>  Upload d'image, lien, durée d'affichage — tout est configurable.</span>
+        <span>Les espaces publicitaires se gèrent depuis le <strong>dashboard admin</strong> (dashboard.html). Upload d'image, lien, durée d'affichage — tout est configurable.</span>
       </div>
     </section>
 
@@ -567,6 +532,17 @@
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="config.js"></script>
 <script src="app.js"></script>
+<script>
+/* Bannière uniquement sur #accueil, pas sur #guide */
+window.addEventListener('DOMContentLoaded', function(){
+  setTimeout(function(){
+    var hash = window.location.hash;
+    /* Ne déclencher que si on est sur l'accueil (hash vide ou #accueil) */
+    if(hash && hash !== '#accueil') return;
+    if(window.triggerInterstitielDelay) window.triggerInterstitielDelay(0);
+  }, 10000);
+});
+</script>
 
 
 
